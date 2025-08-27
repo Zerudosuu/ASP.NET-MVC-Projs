@@ -1,0 +1,24 @@
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# ASP.NET generated files
+*.dll
+*.exe
+*.db
+*.log
+
+# Entity Framework Migrations backups
+*.jfm
+
+# Configuration (keep only appsettings.json, ignore local dev secrets)
+appsettings.Development.json
+
+# Node (if you add React/Angular later
