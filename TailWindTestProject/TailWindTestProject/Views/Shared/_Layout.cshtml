@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - TailWindTestProject</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/TailWindTestProject.styles.css" asp-append-version="true"/>
+</head>
+<body class="bg-gray-50 text-gray-900">
+<header>
+    <nav class="bg-white shadow border-b">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="text-lg font-bold">TailWindTestProject</a>
+            <div class="flex space-x-4">
+                <a class="text-gray-700 hover:text-blue-500" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                <a class="text-gray-700 hover:text-blue-500" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+    @RenderBody()
+</main>
+
+<footer class="border-t mt-6 py-4 text-center text-gray-500">
+    &copy; 2025 - TailWindTestProject -
+    <a class="hover:text-blue-500" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+</footer>
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

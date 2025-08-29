@@ -37,5 +37,22 @@ namespace FinanceApplication.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var expense = await _expensesService.Get(id);
+            if (expense != null)
+            {
+                await _expensesService.Remove(expense);
+            }
+
+
+            return RedirectToAction("Expenses");
+        }
+
+    
+    
     }
 }

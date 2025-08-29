@@ -1,0 +1,264 @@
+[
+  {
+    "BookId": "1",
+    "Title": "The Great Adventure",
+    "Description": "An epic journey through uncharted lands.",
+    "Author": "Jane Doe",
+    "Category": "Adventure",
+    "PublishedDate": "2023-01-15",
+    "CoverImageUrl": "https://i.imgur.com/abc123.jpg"
+  },
+  {
+    "BookId": "2",
+    "Title": "Mystery of the Old Manor",
+    "Description": "A thrilling mystery set in a haunted mansion.",
+    "Author": "John Smith",
+    "Category": "Mystery",
+    "PublishedDate": "2022-11-30",
+    "CoverImageUrl": "https://i.imgur.com/def456.jpg"
+  },
+  {
+    "BookId": "3",
+    "Title": "Science Simplified",
+    "Description": "Breaking down complex scientific concepts.",
+    "Author": "Emily White",
+    "Category": "Science",
+    "PublishedDate": "2021-07-22",
+    "CoverImageUrl": "https://i.imgur.com/ghi789.jpg"
+  },
+  {
+    "BookId": "4",
+    "Title": "Cooking for Beginners",
+    "Description": "Easy recipes for those new to cooking.",
+    "Author": "Michael Brown",
+    "Category": "Cooking",
+    "PublishedDate": "2020-03-10",
+    "CoverImageUrl": "https://i.imgur.com/jkl012.jpg"
+  },
+  {
+    "BookId": "5",
+    "Title": "The Art of Painting",
+    "Description": "A guide to mastering painting techniques.",
+    "Author": "Sarah Green",
+    "Category": "Art",
+    "PublishedDate": "2019-05-05",
+    "CoverImageUrl": "https://i.imgur.com/mno345.jpg"
+  },
+  {
+    "BookId": "6",
+    "Title": "Tech Innovations",
+    "Description": "Exploring the latest in technology.",
+    "Author": "David Blue",
+    "Category": "Technology",
+    "PublishedDate": "2024-02-18",
+    "CoverImageUrl": "https://i.imgur.com/pqr678.jpg"
+  },
+  {
+    "BookId": "7",
+    "Title": "Historical Tales",
+    "Description": "Stories from the past brought to life.",
+    "Author": "Linda Yellow",
+    "Category": "History",
+    "PublishedDate": "2023-08-25",
+    "CoverImageUrl": "https://i.imgur.com/stu901.jpg"
+  },
+  {
+    "BookId": "8",
+    "Title": "Fitness Fundamentals",
+    "Description": "A beginner's guide to physical fitness.",
+    "Author": "Chris Red",
+    "Category": "Health",
+    "PublishedDate": "2022-12-12",
+    "CoverImageUrl": "https://i.imgur.com/vwx234.jpg"
+  },
+  {
+    "BookId": "9",
+    "Title": "Gardening Basics",
+    "Description": "Starting your own garden from scratch.",
+    "Author": "Patricia Pink",
+    "Category": "Gardening",
+    "PublishedDate": "2021-09-09",
+    "CoverImageUrl": "https://i.imgur.com/yzx567.jpg"
+  },
+  {
+    "BookId": "10",
+    "Title": "Digital Marketing 101",
+    "Description": "Introduction to online marketing strategies.",
+    "Author": "Robert Black",
+    "Category": "Business",
+    "PublishedDate": "2020-06-15",
+    "CoverImageUrl": "https://i.imgur.com/abc890.jpg"
+  },
+  {
+    "BookId": "11",
+    "Title": "Space Exploration",
+    "Description": "The journey beyond our planet.",
+    "Author": "Alice White",
+    "Category": "Science",
+    "PublishedDate": "2024-04-20",
+    "CoverImageUrl": "https://i.imgur.com/def123.jpg"
+  },
+  {
+    "BookId": "12",
+    "Title": "Philosophy for All",
+    "Description": "Understanding philosophical ideas.",
+    "Author": "George Grey",
+    "Category": "Philosophy",
+    "PublishedDate": "2023-11-11",
+    "CoverImageUrl": "https://i.imgur.com/ghi456.jpg"
+  },
+  {
+    "BookId": "13",
+    "Title": "Underwater Wonders",
+    "Description": "Exploring the mysteries of the ocean.",
+    "Author": "Nancy Blue",
+    "Category": "Nature",
+    "PublishedDate": "2022-10-10",
+    "CoverImageUrl": "https://i.imgur.com/jkl789.jpg"
+  },
+  {
+    "BookId": "14",
+    "Title": "JavaScript for Beginners",
+    "Description": "Learning the basics of JavaScript.",
+    "Author": "Kevin Brown",
+    "Category": "Programming",
+    "PublishedDate": "2021-08-08",
+    "CoverImageUrl": "https://i.imgur.com/mno012.jpg"
+  },
+  {
+    "BookId": "15",
+    "Title": "Photography Tips",
+    "Description": "Improving your photography skills.",
+    "Author": "Olivia Green",
+    "Category": "Art",
+    "PublishedDate": "2020-04-04",
+    "CoverImageUrl": "https://i.imgur.com/pqr345.jpg"
+  },
+  {
+    "BookId": "16",
+    "Title": "Yoga for Everyone",
+    "Description": "A guide to yoga for all levels.",
+    "Author": "Sophia Yellow",
+    "Category": "Health",
+    "PublishedDate": "2019-02-02",
+    "CoverImageUrl": "https://i.imgur.com/stu678.jpg"
+  },
+  {
+    "BookId": "17",
+    "Title": "World War II",
+    "Description": "An in-depth look at World War II.",
+    "Author": "James Red",
+    "Category": "History",
+    "PublishedDate": "2024-01-01",
+    "CoverImageUrl": "https://i.imgur.com/vwx901.jpg"
+  },
+  {
+    "BookId": "18",
+    "Title": "Artificial Intelligence",
+    "Description": "Understanding AI and its impact.",
+    "Author": "Emma Pink",
+    "Category": "Technology",
+    "PublishedDate": "2023-07-07",
+    "CoverImageUrl": "https://i.imgur.com/yzx234.jpg"
+  },
+  {
+    "BookId": "19",
+    "Title": "The Great Outdoors",
+    "Description": "Exploring nature and wildlife.",
+    "Author": "Daniel Black",
+    "Category": "Nature",
+    "PublishedDate": "2022-05-05",
+    "CoverImageUrl": "https://i.imgur.com/abc567.jpg"
+  },
+  {
+    "BookId": "20",
+    "Title": "Cooking with Spices",
+    "Description": "Enhancing flavors with spices.",
+    "Author": "Rachel White",
+    "Category": "Cooking",
+    "PublishedDate": "2021-03-03",
+    "CoverImageUrl": "https://i.imgur.com/def890.jpg"
+  },
+  {
+    "BookId": "21",
+    "Title": "Digital Photography",
+    "Description": "Mastering digital photography techniques.",
+    "Author": "William Green",
+    "Category": "Art",
+    "PublishedDate": "2020-01-01",
+    "CoverImageUrl": "https://i.imgur.com/ghi123.jpg"
+  },
+  {
+    "BookId": "22",
+    "Title": "Machine Learning",
+    "Description": "An introduction to machine learning.",
+    "Author": "Isabella Blue",
+    "Category": "Technology",
+    "PublishedDate": "2024-09-09",
+    "CoverImageUrl": "https://i.imgur.com/jkl456.jpg"
+  },
+  {
+    "BookId": "23",
+    "Title": "The Medieval Era",
+    "Description": "Exploring the medieval period.",
+    "Author": "Henry Red",
+    "Category": "History",
+    "PublishedDate": "2023-06-06",
+    "CoverImageUrl": "https://i.imgur.com/mno789.jpg"
+  },
+  {
+    "BookId": "24",
+    "Title": "Fitness Nutrition",
+    "Description": "Nutrition tips for fitness enthusiasts.",
+    "Author": "Charlotte Pink",
+    "Category": "Health",
+    "PublishedDate": "2022-04-04",
+    "CoverImageUrl": "https://i.imgur.com/pqr012.jpg"
+  },
+  {
+    "BookId": "25",
+    "Title": "The Renaissance",
+    "Description": "Art and culture of the Renaissance period.",
+    "Author": "Edward Yellow",
+    "Category": "Art",
+    "PublishedDate": "2021-02-02",
+    "CoverImageUrl": "https://i.imgur.com/stu345.jpg"
+  },
+  {
+    "BookId": "26",
+    "Title": "Web Development",
+    "Description": "Building websites from scratch.",
+    "Author": "Grace Black",
+    "Category": "Programming",
+    "PublishedDate": "2020-12-12",
+    "CoverImageUrl": "https://i.imgur.com/vwx678.jpg"
+  },
+  {
+    "BookId": "27",
+    "Title": "The Solar System",
+    "Description": "A guide to our solar system.",
+    "Author": "Leo White",
+    "Category": "Science",
+    "PublishedDate": "2019-10-10",
+    "CoverImageUrl": "https://i.imgur.com/yzx901.jpg"
+  },
+  {
+    "BookId": "28",
+    "Title": "Modern Art",
+    "Description": "Understanding modern art movements.",
+    "Author": "Mia Green",
+    "Category": "Art",
+    "PublishedDate": "2018-08-08",
+    "CoverImageUrl": "https://i.imgur.com/abc234.jpg"
+  },
+  {
+    "BookId": "29",
+    "Title": "The Cold War",
+    "Description": "An analysis of the Cold War era.",
+    "Author": "Ronald",
+    "Category": "Art",
+    "PublishedDate": "2018-08-08",
+    "CoverImageUrl": "https://i.imgur.com/abc234.jpg"
+  }
+
+]
