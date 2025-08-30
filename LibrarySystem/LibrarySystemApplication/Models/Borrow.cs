@@ -1,10 +1,11 @@
-﻿using LibrarySystemApplication.Models.Books;
+﻿using LibrarySystemApplication.Models.Account;
+using LibrarySystemApplication.Models.Books;
 
 namespace LibrarySystemApplication.Models
 {
     public class Borrow
     {
-        public int Id { get; set; }
+        public string BorrowId { get; set; } = Guid.NewGuid().ToString();
 
         // Foreign keys
         public string MemberId { get; set; }

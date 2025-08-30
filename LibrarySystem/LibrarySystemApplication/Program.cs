@@ -1,6 +1,7 @@
 using LibrarySystemApplication.Data;
 using LibrarySystemApplication.Data.Services;
-using LibrarySystemApplication.Models;
+using LibrarySystemApplication.Data.Services.Interface;
+using LibrarySystemApplication.Models.Account;
 using LibrarySystemApplication.Models.Books;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<LibrarySystemAppContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+builder.Services.AddIdentity<Member, IdentityRole>(
+    options =>
+    {
+        options.Password.RequiredUniqueChars = 0;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequiredLength = 8;
 
-builder.Services.AddDefaultIdentity<Member>(options =>
-    options.SignIn.RequireConfirmedAccount = false) // easier for testing
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<LibrarySystemAppContext>();
+    }
+    
+    ).AddEntityFrameworkStores<LibrarySystemAppContext>().AddDefaultTokenProviders() ;
+
+
+builder.Services.AddScoped<IBookService,  BookService>();
+builder.Services.AddScoped<ILibraryServices, LibraryServices>();
 
 builder.Services.AddRazorPages(); 
 
@@ -47,6 +59,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapStaticAssets();

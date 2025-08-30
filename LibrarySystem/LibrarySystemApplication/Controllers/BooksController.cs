@@ -1,16 +1,20 @@
-﻿public class BooksController : Controller
-{
-    private readonly ILibraryServices _libraryServices;
+﻿using LibrarySystemApplication.Data.Services.Interface;
+using LibrarySystemApplication.Models.Books;
+using Microsoft.AspNetCore.Mvc;
 
-    public BooksController(ILibraryServices libraryServices)
+public class BooksController : Controller
+{
+    private readonly IBookService _bookService;
+
+    public BooksController(IBookService bookService)
     {
-        _libraryServices = libraryServices;
+        _bookService = bookService;
     }
 
     // GET: Books
     public async Task<IActionResult> Index()
     {
-        var books = await _libraryServices.GetAllAsync();
+        var books = await _bookService.GetAllAsync();
         return View(books);
     }
 
@@ -19,7 +23,7 @@
     {
         if (id == null) return NotFound();
 
-        var book = await _libraryServices.GetByIdAsync(id);
+        var book = await _bookService.GetByIdAsync(id);
         if (book == null) return NotFound();
 
         return View(book);
@@ -35,7 +39,7 @@
     {
         if (ModelState.IsValid)
         {
-            await _libraryServices.AddAsync(book);
+            await _bookService.AddAsync(book);
             return RedirectToAction(nameof(Index));
         }
         return View(book);
@@ -44,7 +48,7 @@
     // GET: Books/Edit/5
     public async Task<IActionResult> Edit(string id)
     {
-        var book = await _libraryServices.GetByIdAsync(id);
+        var book = await _bookService.GetByIdAsync(id);
         if (book == null) return NotFound();
 
         return View(book);
@@ -59,7 +63,7 @@
 
         if (ModelState.IsValid)
         {
-            await _libraryServices.UpdateAsync(book);
+            await _bookService.UpdateAsync(book);
             return RedirectToAction(nameof(Index));
         }
         return View(book);
@@ -68,7 +72,7 @@
     // GET: Books/Delete/5
     public async Task<IActionResult> Delete(string id)
     {
-        var book = await _libraryServices.GetByIdAsync(id);
+        var book = await _bookService.GetByIdAsync(id);
         if (book == null) return NotFound();
 
         return View(book);
@@ -79,7 +83,7 @@
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
-        await _libraryServices.DeleteAsync(id);
+        await _bookService.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
     }
 }

@@ -1,6 +1,9 @@
-﻿using LibrarySystemApplication.Models;
+﻿using LibrarySystemApplication.Data.Services.Interface;
+using LibrarySystemApplication.Models;
 using LibrarySystemApplication.Models.Books;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace LibrarySystemApplication.Data.Services
 {
@@ -13,60 +16,64 @@ namespace LibrarySystemApplication.Data.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<Book>> GetAllAsync()
+        public async Task BorrowBookAsync(string memberId, string bookId)
         {
-            return await _context.Books.ToListAsync();
-        }
 
-        public async Task<Book?> GetByIdAsync(string id)
-        {
-            return await _context.Books.FindAsync(id);
-        }
 
-        public async Task AddAsync(Book book)
-        {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-        }
+            if (string.IsNullOrWhiteSpace(memberId))
+                throw new ArgumentNullException(nameof(memberId));
 
-        public async Task UpdateAsync(Book book)
-        {
-            _context.Books.Update(book);
-            await _context.SaveChangesAsync();
-        }
+            if (string.IsNullOrWhiteSpace(bookId))
+                throw new ArgumentNullException(nameof(bookId));
 
-        public async Task DeleteAsync(string id)
-        {
-            var book = await _context.Books.FindAsync(id);
-            if (book != null)
-            {
-                _context.Books.Remove(book);
-                await _context.SaveChangesAsync();
-            }
-        }
 
-        public async Task<bool> BorrowBookAsync(string memberId, string bookId)
-        {
-            var book = await _context.Books.FindAsync(bookId);
 
-            if (book == null || !book.IsAvailable)
-                return false;
+            //this code is a linq lambda expression just like mapping in JS, this returning bool 
+            var alreadyBorrowed = await _context.Borrows.AnyAsync(b => b.BookId  == bookId && b.ReturnDate == null);
+
+            if (alreadyBorrowed)
+                throw new InvalidOperationException("Book is already borrowed");
 
             var borrow = new Borrow
             {
-                BookId = bookId,
                 MemberId = memberId,
-                BorrowDate = DateTime.Now,
+                BookId = bookId,
             };
 
-            book.IsAvailable = false;
-
-            _context.Borrows.Add(borrow);
-            _context.Books.Update(book);
-
+            await _context.Borrows.AddAsync(borrow);
             await _context.SaveChangesAsync();
+        
+        
+        }
 
-            return true;
+        public async Task<IEnumerable<Borrow>> GetBorrowedBooksAsync(string memberId)
+        {
+
+            if (string.IsNullOrWhiteSpace(memberId))
+                throw new ArgumentNullException(nameof(memberId));
+
+            return await _context.Borrows.Where(b => b.MemberId == memberId && b.ReturnDate == null).Include(b => b.Book).ToListAsync();
+        }
+
+        public async Task ReturnBookAsync(string bookId, string memberId)
+        {
+            if (string.IsNullOrWhiteSpace(memberId))
+                throw new ArgumentNullException(nameof(memberId));
+
+            if (string.IsNullOrWhiteSpace(bookId))
+                throw new ArgumentNullException(nameof(bookId));
+
+
+            var borrowRecord = await _context.Borrows
+                .FirstOrDefaultAsync(b => b.BookId == bookId && b.ReturnDate == null);
+
+            if (borrowRecord == null)
+                throw new InvalidOperationException("this book is not currently borrowed by this member");
+
+            borrowRecord.ReturnDate = DateTime.Now;
+
+            _context.Borrows.Update(borrowRecord);
+            await _context.SaveChangesAsync();
         }
     }
 }
