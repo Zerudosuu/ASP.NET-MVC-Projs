@@ -64,7 +64,7 @@ namespace LibrarySystemApplication.Controllers
                 
 
                 var result = await _userManager.CreateAsync(member, model.Password!);
-                await _userManager.AddToRoleAsync(member, "Admin");
+                
 
 
                 if (result.Succeeded)
@@ -88,8 +88,6 @@ namespace LibrarySystemApplication.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(HomeController.Index));
            
-        
-        
         }
 
         public IActionResult Index()
