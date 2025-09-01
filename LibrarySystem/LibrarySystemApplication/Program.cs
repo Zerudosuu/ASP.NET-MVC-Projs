@@ -65,6 +65,7 @@ using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();
 
+    string name = "Ronald";
     string email = "admin@admin.com";
     string password = "Test1234";
 
@@ -72,6 +73,7 @@ using (var scope = app.Services.CreateScope())
     {
 
         var member = new Member();
+        member.Name = name;
         member.Email = email;
         member.UserName = email;
         member.EmailConfirmed = true;

@@ -5,8 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibrarySystemApplication.Controllers
 {
-    [Authorize]
-
+   
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -21,6 +20,7 @@ namespace LibrarySystemApplication.Controllers
             return View();
         }
 
+        [Authorize(Roles ="Member")]
         public IActionResult Privacy()
         {
             return View();

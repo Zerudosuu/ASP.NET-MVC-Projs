@@ -1,4 +1,14 @@
-﻿@{
+﻿@using LibrarySystemApplication.Models.Account
+@using Microsoft.AspNetCore.Identity;
+
+
+@inject SignInManager<Member> signInManager
+@inject UserManager<Member> userManager
+
+
+
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,3 +18,19 @@
 </section>
 
 <section> This is hotdog</section>
+
+
+@{
+    var member = await userManager.GetUserAsync(User);
+    var fullName = member?.Name ?? "No Name Set";
+}
+
+
+@if (User.IsInRole("Admin"))
+{
+    <h1>Hi Admin @fullName</h1>
+}
+else
+{
+    <h1>Hi Member @fullName</h1>
+}

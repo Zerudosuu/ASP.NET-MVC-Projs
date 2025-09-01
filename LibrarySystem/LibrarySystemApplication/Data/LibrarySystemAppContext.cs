@@ -13,6 +13,5 @@ namespace LibrarySystemApplication.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<Borrow> Borrows { get; set; }
 
-
     }
 }

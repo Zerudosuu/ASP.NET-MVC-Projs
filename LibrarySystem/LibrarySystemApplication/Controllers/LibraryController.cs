@@ -6,8 +6,7 @@ using System.Security.Claims;
 namespace LibrarySystemApplication.Controllers
 {
 
-
-
+    [Authorize(Roles ="Admin")]
     public class LibraryController : Controller
     {
 
