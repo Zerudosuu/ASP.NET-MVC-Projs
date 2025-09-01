@@ -53,16 +53,12 @@ namespace LibrarySystemApplication.Controllers
 
                 Member member = new()
                 {
-                    Name = model.UserName,
+                    Email = model.Email,
                     UserName = model.Email,
-                    EmailAddress = model.Email,
                     Address = model.Address
-
-
                 };
 
-                
-
+  
                 var result = await _userManager.CreateAsync(member, model.Password!);
                 
 

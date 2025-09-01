@@ -12,18 +12,19 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<LibrarySystemAppContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
-builder.Services.AddIdentity<Member, IdentityRole>(
-    options =>
-    {
-        options.Password.RequiredUniqueChars = 0;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequiredLength = 8;
 
-    }
-    
-    ).AddEntityFrameworkStores<LibrarySystemAppContext>().AddDefaultTokenProviders() ;
+
+builder.Services.AddIdentity<Member, IdentityRole>(options =>
+{
+    options.Password.RequiredUniqueChars = 0;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequiredLength = 8;
+})
+.AddEntityFrameworkStores<LibrarySystemAppContext>()
+.AddDefaultTokenProviders();
+
 
 
 builder.Services.AddScoped<IBookService,  BookService>();
@@ -48,6 +49,43 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { "Admin", "Librarian", "Member" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();
+
+    string email = "admin@admin.com";
+    string password = "Test1234";
+
+    if (await userManager.FindByEmailAsync(email) == null)
+    {
+
+        var member = new Member();
+        member.Email = email;
+        member.UserName = email;
+        member.EmailConfirmed = true;
+
+
+        await userManager.CreateAsync(member, password);
+        await userManager.AddToRoleAsync(member, "Admin");
+
+
+
+    }
+}
+
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -70,4 +108,9 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.MapRazorPages();
+
+
+
+
+
 app.Run();
