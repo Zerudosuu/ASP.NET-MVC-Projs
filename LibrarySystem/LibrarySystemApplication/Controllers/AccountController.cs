@@ -1,7 +1,7 @@
 ﻿using LibrarySystemApplication.Models.Account;
+using LibrarySystemApplication.Models.Account.Control;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace LibrarySystemApplication.Controllers
 {
@@ -97,7 +97,7 @@ namespace LibrarySystemApplication.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction(nameof(HomeController.Index));
+            return RedirectToAction("Index", "Home");
             // nameof is better than a string — avoids typos and supports refactoring.
         }
 

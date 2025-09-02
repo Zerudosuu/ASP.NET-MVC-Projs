@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LibrarySystemApplication.Models.Account
+namespace LibrarySystemApplication.Models.Account.Control
 {
     public class Register
     {

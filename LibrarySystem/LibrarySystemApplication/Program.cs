@@ -5,6 +5,7 @@ using LibrarySystemApplication.Models.Account;
 using LibrarySystemApplication.Models.Books;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -69,6 +70,11 @@ using (var scope = app.Services.CreateScope())
     string email = "admin@admin.com";
     string password = "Test1234";
 
+
+    string librarianName = "MainLibrarian";
+    string librarianEmail = "librarian@librarian.com";
+    string librarianPassword = "Test1234";
+
     if (await userManager.FindByEmailAsync(email) == null)
     {
 
@@ -84,6 +90,18 @@ using (var scope = app.Services.CreateScope())
 
 
 
+    }
+
+    if (await userManager.FindByEmailAsync(librarianEmail) == null)
+    {
+        var member = new Member();
+        member.Name = librarianName;
+        member.Email = librarianEmail;
+        member.UserName = librarianEmail;
+        member.EmailConfirmed = true;
+
+        await userManager.CreateAsync(member, librarianPassword);
+        await userManager.AddToRoleAsync(member, "Librarian");
     }
 }
 

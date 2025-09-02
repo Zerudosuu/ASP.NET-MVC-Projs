@@ -1,4 +1,7 @@
-﻿@model LibrarySystemApplication.Models.Books.Book
+﻿@using LibrarySystemApplication.Models.Account
+@using Microsoft.AspNetCore.Identity
+@model LibrarySystemApplication.Models.Books.Book
+
 
 @{
     ViewData["Title"] = "Edit";
@@ -53,7 +56,6 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

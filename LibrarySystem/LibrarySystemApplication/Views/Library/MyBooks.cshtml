@@ -1,0 +1,19 @@
+﻿@model IEnumerable<LibrarySystemApplication.Models.Borrow>
+
+<h2>My Borrowed Books</h2>
+
+@if (Model.Any())
+{
+    <ul class="list-group">
+        @foreach (var book in Model)
+        {
+            <li class="list-group-item">
+                <p>@book.Book.Title - Borrowed on @book.BorrowDate</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>You have not borrowed any books yet.</p>
+}

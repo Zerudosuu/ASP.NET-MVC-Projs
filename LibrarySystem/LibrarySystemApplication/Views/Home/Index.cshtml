@@ -1,25 +1,66 @@
 ﻿@using LibrarySystemApplication.Models.Account
 @using Microsoft.AspNetCore.Identity;
+@model IEnumerable<LibrarySystemApplication.Models.Books.Book>
+@using System.Linq
 
-
-@inject SignInManager<Member> signInManager
-@inject UserManager<Member> userManager
-
-
-
+@* @inject SignInManager<Member> signInManager
+@inject UserManager<Member> userManager *@
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Library";
 }
 
-<section role="" class="vw-90 min-vh-100 d-flex justify-content-center align-items-center bg-primary text-white">
+<section class="vh-40 h-75 d-flex justify-content-center align-items-center bg-primary text-white">
   <h1>Hello, Bootstrap Fullscreen!</h1>
 
 </section>
 
-<section> This is hotdog</section>
+<section class="vw-90 min-vh-100 d-flex justify-content-center border-black">
+    <div class="container d-flex flex-column justify-content-center">
+        <h1 class="mb-4">Featured Books ni @User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value</h1>
+
+        
+        @if (Model != null && Model.Any())
+        {
+            <div class="row">
+                @foreach (var book in Model.Take(3))
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header">
+                                @book.Title
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">@book.Author</h5>
+                                <p class="card-text">
+                                    @(!string.IsNullOrEmpty(book.Description) ? book.Description : "No description available.")
+                                </p>
+                                <a asp-controller="Books" asp-action="Details" asp-route-id="@book.BookId" class="btn btn-primary">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No books available.</p>
+        }
+    </div>
+</section>
 
 
+<section class="vw-90 min-vh-100 d-flex justify-content-center border-black"> About</section>
+<section class="vw-90 h-50 d-flex justify-content-center border-black ">Join Us
+    <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Join Us</a>
+
+</section>
+
+@* 
+
+Example of conditional rendering 
 @{
     var member = await userManager.GetUserAsync(User);
     var fullName = member?.Name ?? "No Name Set";
@@ -33,4 +74,4 @@
 else
 {
     <h1>Hi Member @fullName</h1>
-}
+} *@

@@ -38,8 +38,9 @@ namespace LibrarySystemApplication.Data.Services
             {
                 MemberId = memberId,
                 BookId = bookId,
+                BorrowDate = DateTime.UtcNow,  // <-- important
+                Status = BorrowStatus.Pending  // or whatever makes sense
             };
-
             await _context.Borrows.AddAsync(borrow);
             await _context.SaveChangesAsync();
         
@@ -52,7 +53,18 @@ namespace LibrarySystemApplication.Data.Services
             if (string.IsNullOrWhiteSpace(memberId))
                 throw new ArgumentNullException(nameof(memberId));
 
-            return await _context.Borrows.Where(b => b.MemberId == memberId && b.ReturnDate == null).Include(b => b.Book).ToListAsync();
+           return await _context.Borrows.Where(b => b.MemberId == memberId && b.ReturnDate == null)
+                .Include(b => b.Book) // Include book details
+                .Select(b => new Borrow
+                {
+                    BorrowId = b.BorrowId,
+                    BookId = b.BookId,
+                    Book = b.Book,
+                    BorrowDate = b.BorrowDate,
+                    ReturnDate = b.ReturnDate,
+                    Status = b.Status
+                }).ToListAsync();
+
         }
 
         public async Task ReturnBookAsync(string bookId, string memberId)

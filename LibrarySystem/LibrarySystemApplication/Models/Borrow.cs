@@ -17,5 +17,16 @@ namespace LibrarySystemApplication.Models
         // Extra info
         public DateTime BorrowDate { get; set; }
         public DateTime? ReturnDate { get; set; }
+
+        public BorrowStatus Status { get; set; } = BorrowStatus.InShelf;
     }
+}
+public enum BorrowStatus
+{
+    InShelf,
+    Pending,
+    Approved,
+    Rejected,
+    Returned,
+    Overdue
 }
