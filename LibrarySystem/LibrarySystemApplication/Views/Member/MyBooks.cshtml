@@ -8,7 +8,8 @@
         @foreach (var book in Model)
         {
             <li class="list-group-item">
-                <p>@book.Book. - Borrowed on @book.BorrowDate</p>
+                <p>@book.Book.Title - Borrowed on @book.BorrowDate</p>
+                <p>@book.Status</p>
             </li>
         }
     </ul>
@@ -17,3 +18,37 @@ else
 {
     <p>You have not borrowed any books yet.</p>
 }
+
+<!-- Toast container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="liveToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">
+                <!-- SignalR message goes here -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/libraryHub")
+        .build();
+
+    connection.on("ReceiveNotification", (message) => {
+        // put message into toast
+        document.getElementById("toastMessage").textContent = message;
+
+        // show toast
+        const toastEl = document.getElementById('liveToast');
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    });
+
+    connection.start().catch(err => console.error(err));
+</script>

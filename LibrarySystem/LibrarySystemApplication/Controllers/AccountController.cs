@@ -43,15 +43,26 @@ namespace LibrarySystemApplication.Controllers
 
                 var result = await _signInManager.PasswordSignInAsync(model.Email!, model.Password!, model.RememberMe!, lockoutOnFailure: false);
 
-                if (result.Succeeded) // If login is successful
-                    return RedirectToAction("Index", "Home"); // Go back to home page
+                if (result.Succeeded)
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email!);
+                    var roles = await _userManager.GetRolesAsync(user);
+                    
+                    
+                    if (roles.Contains("Admin"))
+                        return RedirectToAction("Dashboard", "Admin");
+                    else if (roles.Contains("Librarian"))
+                        return RedirectToAction("Requests", "Librarian");
+                    else
+                        return RedirectToAction("MyBooks", "Member");
+                } // If login is successful
 
                 // If login failed, add an error message that will show up in the view.
                 ModelState.AddModelError("", "Invalid login attempt");
             }
 
             // If ModelState is invalid OR login failed, return the same view with the entered data.
-            return View(model);
+                return View(model);
         }
 
         // GET method for Register page (just returns the view)
@@ -101,9 +112,6 @@ namespace LibrarySystemApplication.Controllers
             // nameof is better than a string — avoids typos and supports refactoring.
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+       
     }
 }

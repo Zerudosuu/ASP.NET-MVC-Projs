@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using LibrarySystemApplication.Hubs;
 using System.Data;
+using LibrarySystemApplication.Models.Books;
 
 
 namespace LibrarySystemApplication.Data.Services
@@ -68,8 +69,6 @@ namespace LibrarySystemApplication.Data.Services
 
             if (string.IsNullOrWhiteSpace(bookId))
                 throw new ArgumentNullException(nameof(bookId));
-
-
 
             //this code is a linq lambda expression just like mapping in JS, this returning bool 
             var alreadyBorrowed = await _context.Borrows.AnyAsync(b => b.BookId  == bookId && b.ReturnDate == null);
@@ -137,5 +136,19 @@ namespace LibrarySystemApplication.Data.Services
                 .Include(b => b.Member)
                 .ToListAsync();
         }
+
+
+        public async Task<Book> GetSpecificBookAsync(string bookId)
+        {
+            var book = await _context.Books.FindAsync(bookId);
+            if (book == null)
+            {
+                throw new KeyNotFoundException("Book not found");
+            }
+
+            return book;
+        }
+
+
     }
 }

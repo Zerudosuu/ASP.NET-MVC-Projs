@@ -1,18 +1,58 @@
-@model TModel
+@model IEnumerable<Borrow>
 
 @{
     Layout = null;
 }
 
-<!DOCTYPE html>
+<h2>Pending Requests</h2>
+<table class="table table-bordered" id="pendingTable">
+    <thead>
+    <tr>
+        <th>Book</th>
+        <th>Member</th>
+        <th>Requested On</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var borrow in Model)
+    {
+        <tr>
+            <td>@borrow.Book.Title</td>
+            <td>@borrow.Member.UserName</td>
+            <td>@borrow.BorrowDate.ToShortDateString()</td>
+            <td>@borrow.Status</td>
+            <td>
+                    <form asp-action="ApproveBorrow" method="post" style="display:inline">
+                    <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
+                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                </form>
+                    <form asp-action="RejectBorrow" method="post" style="display:inline">
+                    <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
+                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
-</div>
-</body>
-</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/libraryHub")
+        .build();
+
+        connection.on("ReceiveBorrowRequest", (bookTitle, memberName) => {
+            const table = document.getElementById("pendingTable").getElementsByTagName("tbody")[0];
+            const row = table.insertRow();
+            row.innerHTML = `<td>${bookTitle}</td>
+                             <td>${memberName}</td>
+                             <td>${new Date().toLocaleDateString()}</td>
+                             <td><span class="badge bg-warning">Pending</td>`;
+        });
+        connection.start().catch(function (err) {
+            return console.error(err.toString());
+        });
+</script>

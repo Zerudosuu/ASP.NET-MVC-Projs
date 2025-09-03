@@ -57,7 +57,7 @@
     <h1>@Model.BookId</h1>
 </div>
 <div>
-    <form asp-controller="Library" asp-action="Borrow" method="post">
+    <form asp-controller="Member" asp-action="Borrow" method="post">
         <input type="hidden" name="bookId" value="@Model.BookId" />
         <button type="submit" class="btn btn-primary">Borrow</button>
     </form>

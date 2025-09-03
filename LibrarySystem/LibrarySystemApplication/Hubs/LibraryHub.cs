@@ -6,9 +6,9 @@ namespace LibrarySystemApplication.Hubs
     public class LibraryHub : Hub
     {
         // Send notification to all connected librarians
-        public async Task NotifyLibrarian(string message)
+        public async Task NotifyLibrarian(string bookTitle, string member)
         {
-            await Clients.Group("Librarians").SendAsync("ReceiveNotification", message);
+            await Clients.Group("Librarians").SendAsync("ReceiveBorrowRequest", bookTitle, member);
         }
 
         // Send notification to a specific user (e.g., Member)

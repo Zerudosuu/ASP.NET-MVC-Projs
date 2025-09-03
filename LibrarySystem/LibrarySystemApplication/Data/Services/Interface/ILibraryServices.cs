@@ -15,5 +15,7 @@ namespace LibrarySystemApplication.Data.Services.Interface
         
         Task <IEnumerable<Borrow>> GetAllBookRequested(BorrowStatus? borrowStatus);
 
+        Task <Book> GetSpecificBookAsync(string bookId);
+
     }
 }

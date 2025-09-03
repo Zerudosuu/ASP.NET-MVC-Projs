@@ -19,6 +19,8 @@ public class LibrarianController : Controller
     public async Task<IActionResult> ApproveBorrow(string borrowId)
     {
         await _libraryServices.ApproveBorrow(borrowId);
+
+
         return RedirectToAction("Requests");
     }
 
@@ -31,9 +33,7 @@ public class LibrarianController : Controller
 
     public async Task <IActionResult> Requests()
     {
-
-        var borrowquee = _libraryServices.GetAllBookRequested(null);
-        
+        var borrowquee = await _libraryServices.GetAllBookRequested(BorrowStatus.Pending);
         return View(borrowquee);
     }
 
