@@ -6,7 +6,8 @@
     "Author": "Jane Doe",
     "Category": "Adventure",
     "PublishedDate": "2023-01-15",
-    "CoverImageUrl": "https://i.imgur.com/abc123.jpg"
+    "CoverImageUrl": "https://i.imgur.com/abc123.jpg",
+    "TotalCopies": 5
   },
   {
     "BookId": "2",
@@ -15,7 +16,9 @@
     "Author": "John Smith",
     "Category": "Mystery",
     "PublishedDate": "2022-11-30",
-    "CoverImageUrl": "https://i.imgur.com/def456.jpg"
+    "CoverImageUrl": "https://i.imgur.com/def456.jpg",
+    "TotalCopies": 4
+
   },
   {
     "BookId": "3",
@@ -24,7 +27,9 @@
     "Author": "Emily White",
     "Category": "Science",
     "PublishedDate": "2021-07-22",
-    "CoverImageUrl": "https://i.imgur.com/ghi789.jpg"
+    "CoverImageUrl": "https://i.imgur.com/ghi789.jpg",
+    "TotalCopies" :4
+ 
   },
   {
     "BookId": "4",
@@ -33,7 +38,8 @@
     "Author": "Michael Brown",
     "Category": "Cooking",
     "PublishedDate": "2020-03-10",
-    "CoverImageUrl": "https://i.imgur.com/jkl012.jpg"
+    "CoverImageUrl": "https://i.imgur.com/jkl012.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "5",
@@ -42,7 +48,8 @@
     "Author": "Sarah Green",
     "Category": "Art",
     "PublishedDate": "2019-05-05",
-    "CoverImageUrl": "https://i.imgur.com/mno345.jpg"
+    "CoverImageUrl": "https://i.imgur.com/mno345.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "6",
@@ -51,7 +58,8 @@
     "Author": "David Blue",
     "Category": "Technology",
     "PublishedDate": "2024-02-18",
-    "CoverImageUrl": "https://i.imgur.com/pqr678.jpg"
+    "CoverImageUrl": "https://i.imgur.com/pqr678.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "7",
@@ -60,7 +68,8 @@
     "Author": "Linda Yellow",
     "Category": "History",
     "PublishedDate": "2023-08-25",
-    "CoverImageUrl": "https://i.imgur.com/stu901.jpg"
+    "CoverImageUrl": "https://i.imgur.com/stu901.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "8",
@@ -69,7 +78,8 @@
     "Author": "Chris Red",
     "Category": "Health",
     "PublishedDate": "2022-12-12",
-    "CoverImageUrl": "https://i.imgur.com/vwx234.jpg"
+    "CoverImageUrl": "https://i.imgur.com/vwx234.jpg",
+    "TotalCopies" : 4
   },
   {
     "BookId": "9",
@@ -78,7 +88,8 @@
     "Author": "Patricia Pink",
     "Category": "Gardening",
     "PublishedDate": "2021-09-09",
-    "CoverImageUrl": "https://i.imgur.com/yzx567.jpg"
+    "CoverImageUrl": "https://i.imgur.com/yzx567.jpg",
+    "TotalCopies": 4
   },
   {
     "BookId": "10",
@@ -87,7 +98,8 @@
     "Author": "Robert Black",
     "Category": "Business",
     "PublishedDate": "2020-06-15",
-    "CoverImageUrl": "https://i.imgur.com/abc890.jpg"
+    "CoverImageUrl": "https://i.imgur.com/abc890.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "11",
@@ -96,7 +108,8 @@
     "Author": "Alice White",
     "Category": "Science",
     "PublishedDate": "2024-04-20",
-    "CoverImageUrl": "https://i.imgur.com/def123.jpg"
+    "CoverImageUrl": "https://i.imgur.com/def123.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "12",
@@ -105,7 +118,8 @@
     "Author": "George Grey",
     "Category": "Philosophy",
     "PublishedDate": "2023-11-11",
-    "CoverImageUrl": "https://i.imgur.com/ghi456.jpg"
+    "CoverImageUrl": "https://i.imgur.com/ghi456.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "13",
@@ -114,7 +128,8 @@
     "Author": "Nancy Blue",
     "Category": "Nature",
     "PublishedDate": "2022-10-10",
-    "CoverImageUrl": "https://i.imgur.com/jkl789.jpg"
+    "CoverImageUrl": "https://i.imgur.com/jkl789.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "14",
@@ -123,7 +138,8 @@
     "Author": "Kevin Brown",
     "Category": "Programming",
     "PublishedDate": "2021-08-08",
-    "CoverImageUrl": "https://i.imgur.com/mno012.jpg"
+    "CoverImageUrl": "https://i.imgur.com/mno012.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "15",
@@ -132,7 +148,8 @@
     "Author": "Olivia Green",
     "Category": "Art",
     "PublishedDate": "2020-04-04",
-    "CoverImageUrl": "https://i.imgur.com/pqr345.jpg"
+    "CoverImageUrl": "https://i.imgur.com/pqr345.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "16",
@@ -141,7 +158,8 @@
     "Author": "Sophia Yellow",
     "Category": "Health",
     "PublishedDate": "2019-02-02",
-    "CoverImageUrl": "https://i.imgur.com/stu678.jpg"
+    "CoverImageUrl": "https://i.imgur.com/stu678.jpg",
+    "TotalCopies":4
   },
   {
     "BookId": "17",
@@ -150,7 +168,8 @@
     "Author": "James Red",
     "Category": "History",
     "PublishedDate": "2024-01-01",
-    "CoverImageUrl": "https://i.imgur.com/vwx901.jpg"
+    "CoverImageUrl": "https://i.imgur.com/vwx901.jpg",
+    "TotalCopies" :4
   },
   {
     "BookId": "18",
@@ -159,7 +178,8 @@
     "Author": "Emma Pink",
     "Category": "Technology",
     "PublishedDate": "2023-07-07",
-    "CoverImageUrl": "https://i.imgur.com/yzx234.jpg"
+    "CoverImageUrl": "https://i.imgur.com/yzx234.jpg",
+    "TotalCopies" :4
   },
   {
     "BookId": "19",
@@ -168,7 +188,8 @@
     "Author": "Daniel Black",
     "Category": "Nature",
     "PublishedDate": "2022-05-05",
-    "CoverImageUrl": "https://i.imgur.com/abc567.jpg"
+    "CoverImageUrl": "https://i.imgur.com/abc567.jpg",
+    "TotalCopies": 4
   },
   {
     "BookId": "20",
@@ -177,7 +198,8 @@
     "Author": "Rachel White",
     "Category": "Cooking",
     "PublishedDate": "2021-03-03",
-    "CoverImageUrl": "https://i.imgur.com/def890.jpg"
+    "CoverImageUrl": "https://i.imgur.com/def890.jpg",
+    "TotalCopies" :4
   },
   {
     "BookId": "21",
@@ -186,7 +208,8 @@
     "Author": "William Green",
     "Category": "Art",
     "PublishedDate": "2020-01-01",
-    "CoverImageUrl": "https://i.imgur.com/ghi123.jpg"
+    "CoverImageUrl": "https://i.imgur.com/ghi123.jpg",
+    "TotalCopies": 4
   },
   {
     "BookId": "22",
@@ -195,7 +218,8 @@
     "Author": "Isabella Blue",
     "Category": "Technology",
     "PublishedDate": "2024-09-09",
-    "CoverImageUrl": "https://i.imgur.com/jkl456.jpg"
+    "CoverImageUrl": "https://i.imgur.com/jkl456.jpg",
+    "TotalCopies" :4
   },
   {
     "BookId": "23",
@@ -204,7 +228,8 @@
     "Author": "Henry Red",
     "Category": "History",
     "PublishedDate": "2023-06-06",
-    "CoverImageUrl": "https://i.imgur.com/mno789.jpg"
+    "CoverImageUrl": "https://i.imgur.com/mno789.jpg",
+    "TotalCopies": 4
   },
   {
     "BookId": "24",
@@ -213,7 +238,8 @@
     "Author": "Charlotte Pink",
     "Category": "Health",
     "PublishedDate": "2022-04-04",
-    "CoverImageUrl": "https://i.imgur.com/pqr012.jpg"
+    "CoverImageUrl": "https://i.imgur.com/pqr012.jpg",
+    "TotalCopies": 4
   },
   {
     "BookId": "25",
@@ -222,7 +248,8 @@
     "Author": "Edward Yellow",
     "Category": "Art",
     "PublishedDate": "2021-02-02",
-    "CoverImageUrl": "https://i.imgur.com/stu345.jpg"
+    "CoverImageUrl": "https://i.imgur.com/stu345.jpg",
+    "TotalCopies" :4
   },
   {
     "BookId": "26",
@@ -231,7 +258,8 @@
     "Author": "Grace Black",
     "Category": "Programming",
     "PublishedDate": "2020-12-12",
-    "CoverImageUrl": "https://i.imgur.com/vwx678.jpg"
+    "CoverImageUrl": "https://i.imgur.com/vwx678.jpg",
+    "TotalCopies": 4
   },
   {
     "BookId": "27",
@@ -240,7 +268,8 @@
     "Author": "Leo White",
     "Category": "Science",
     "PublishedDate": "2019-10-10",
-    "CoverImageUrl": "https://i.imgur.com/yzx901.jpg"
+    "CoverImageUrl": "https://i.imgur.com/yzx901.jpg",
+    "TotalCopies" :4
   },
   {
     "BookId": "28",
@@ -249,7 +278,8 @@
     "Author": "Mia Green",
     "Category": "Art",
     "PublishedDate": "2018-08-08",
-    "CoverImageUrl": "https://i.imgur.com/abc234.jpg"
+    "CoverImageUrl": "https://i.imgur.com/abc234.jpg",
+    "TotalCopies": 4
   },
   {
     "BookId": "29",
@@ -258,7 +288,8 @@
     "Author": "Ronald",
     "Category": "Art",
     "PublishedDate": "2018-08-08",
-    "CoverImageUrl": "https://i.imgur.com/abc234.jpg"
+    "CoverImageUrl": "https://i.imgur.com/abc234.jpg",
+    "TotalCopies": 4
   }
 
 ]

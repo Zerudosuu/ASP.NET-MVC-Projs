@@ -1,22 +1,65 @@
 ﻿using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models;
-using LibrarySystemApplication.Models.Books;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
+using LibrarySystemApplication.Hubs;
+using System.Data;
+
 
 namespace LibrarySystemApplication.Data.Services
 {
     public class LibraryServices : ILibraryServices
     {
         private readonly LibrarySystemAppContext _context;
+        private readonly IHubContext<LibraryHub> _hubContext;
 
-        public LibraryServices(LibrarySystemAppContext context)
+        public LibraryServices(LibrarySystemAppContext context, IHubContext<LibraryHub> hubContext)
         {
+            _hubContext = hubContext;
             _context = context;
         }
 
-        public async Task BorrowBookAsync(string memberId, string bookId)
+        public async Task ApproveBorrow(string borrowId)
+        {
+           var borrowRecord = await _context.Borrows.Include(b => b.Book).FirstOrDefaultAsync(b => b.BorrowId == borrowId);
+
+            if(borrowRecord == null)
+                throw new InvalidOperationException("Borrow record not found");
+
+            borrowRecord.Status = BorrowStatus.Approved;
+            _context.Borrows.Update(borrowRecord);
+            await _context.SaveChangesAsync();
+
+            // Optionally, you might want to notify the member that their borrow request has been approved.
+            await _hubContext.Clients.User(borrowRecord.MemberId).SendAsync("ReceiveNotification", $"Your borrow request for book '{borrowRecord.Book.Title}' has been approved.");
+
+        }
+
+        public async Task RejectBorrowAsync(string borrowId, string reason = null)
+        {
+            var borrowRecord =
+                await _context.Borrows.Include(b => b.Book)
+                    .FirstOrDefaultAsync(b => b.BorrowId == borrowId);
+
+            if (borrowRecord == null)
+                    throw new InvalidOperationException("Borrow record not found");
+            
+            borrowRecord.Status = BorrowStatus.Rejected;
+            _context.Borrows.Update(borrowRecord);
+            await _context.SaveChangesAsync();
+
+            // Notify Member via SignalR
+            var message = $"Your borrow request for '{borrowRecord.Book.Title}' has been rejected.";
+            if (!string.IsNullOrEmpty(reason))
+            {
+                message += $" Reason: {reason}";
+            }
+
+            await _hubContext.Clients.User(borrowRecord.MemberId)
+                .SendAsync("ReceiveNotification", message);
+        }
+
+        public async Task BorrowBookAsync(string memberId, string bookId, BorrowStatus borrowStatus)
         {
 
 
@@ -86,6 +129,13 @@ namespace LibrarySystemApplication.Data.Services
 
             _context.Borrows.Update(borrowRecord);
             await _context.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<Borrow>> GetAllBookRequested(BorrowStatus? filter = null)
+        {
+            return await _context.Borrows.Where(b => b.Status == filter)
+                .Include(b => b.Book)
+                .Include(b => b.Member)
+                .ToListAsync();
         }
     }
 }

@@ -22,5 +22,7 @@ namespace LibrarySystemApplication.Models.Books
         // New field
         public bool IsAvailable { get; set; } = true;
 
+        public int TotalCopies { get; set; } = 1;
+
     }
 }

@@ -1,11 +1,11 @@
 using LibrarySystemApplication.Data;
 using LibrarySystemApplication.Data.Services;
 using LibrarySystemApplication.Data.Services.Interface;
+using LibrarySystemApplication.Hubs;
 using LibrarySystemApplication.Models.Account;
 using LibrarySystemApplication.Models.Books;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.InteropServices;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +30,8 @@ builder.Services.AddIdentity<Member, IdentityRole>(options =>
 
 builder.Services.AddScoped<IBookService,  BookService>();
 builder.Services.AddScoped<ILibraryServices, LibraryServices>();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddRazorPages(); 
 
@@ -129,8 +131,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-
-
+app.MapHub<LibraryHub>("/libraryHub");
 
 
 app.Run();
