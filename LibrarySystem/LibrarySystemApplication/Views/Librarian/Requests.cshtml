@@ -44,13 +44,13 @@
         .withUrl("/libraryHub")
         .build();
 
-        connection.on("ReceiveBorrowRequest", (bookTitle, memberName) => {
+        connection.on("ReceiveBorrowRequest", (bookId, memberName) => {
             const table = document.getElementById("pendingTable").getElementsByTagName("tbody")[0];
             const row = table.insertRow();
-            row.innerHTML = `<td>${bookTitle}</td>
+            row.innerHTML = `<td>${bookId}</td>
                              <td>${memberName}</td>
                              <td>${new Date().toLocaleDateString()}</td>
-                             <td><span class="badge bg-warning">Pending</td>`;
+                            <td><span class="badge bg-warning">Pending</span></td>`;
         });
         connection.start().catch(function (err) {
             return console.error(err.toString());

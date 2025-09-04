@@ -1,5 +1,6 @@
 ﻿using LibrarySystemApplication.Models.Books;
 
+
 namespace LibrarySystemApplication.Data.Services.Interface
 {
     public interface IBookService
@@ -9,6 +10,8 @@ namespace LibrarySystemApplication.Data.Services.Interface
         Task AddAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(string id);
+        
+        Task <bool> CheckIfBorrowedAsync(string memeberId, string id);
 
           
     }

@@ -1,4 +1,5 @@
 ﻿@using LibrarySystemApplication.Models.Account
+@using LibrarySystemApplication.Models.Books
 @using Microsoft.AspNetCore.Identity
 @model LibrarySystemApplication.Models.Books.Book
 @inject UserManager<Member> userManager
@@ -57,10 +58,19 @@
     <h1>@Model.BookId</h1>
 </div>
 <div>
+    
+    @if (ViewBag.AlreadyBorrowed == true)
+    {
+        <button class = "btn btn-secondary" disabled> You already Borrowed this  </button>
+    }
+    else
+    {
     <form asp-controller="Member" asp-action="Borrow" method="post">
-        <input type="hidden" name="bookId" value="@Model.BookId" />
+        <input type="hidden" name="bookId" value="@Model.BookId"/>
         <button type="submit" class="btn btn-primary">Borrow</button>
     </form>
+        
+    }
 
 
     @* <a asp-action="Index">Back to List</a> *@

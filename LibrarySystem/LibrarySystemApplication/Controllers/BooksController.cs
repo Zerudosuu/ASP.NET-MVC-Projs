@@ -1,6 +1,11 @@
-﻿using LibrarySystemApplication.Data.Services.Interface;
+﻿using System.Security.Claims;
+using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models.Books;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
+
+namespace LibrarySystemApplication.Controllers;
 
 public class BooksController : Controller
 {
@@ -18,6 +23,7 @@ public class BooksController : Controller
         return View(books);
     }
 
+
     // GET: Books/Details/5
     public async Task<IActionResult> Details(string id)
     {
@@ -26,8 +32,19 @@ public class BooksController : Controller
         var book = await _bookService.GetByIdAsync(id);
         if (book == null) return NotFound();
 
+        var memberId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (memberId != null)
+        {
+            var alreadyBorrowed = await _bookService.CheckIfBorrowedAsync(memberId, id);
+         
+            ViewBag.AlreadyBorrowed = alreadyBorrowed;
+        }
+
         return View(book);
     }
+
+
 
     // GET: Books/Create
     public IActionResult Create() => View();

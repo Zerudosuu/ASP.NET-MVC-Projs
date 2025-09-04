@@ -47,7 +47,7 @@ public class MemberController : Controller
             var member = User.Identity.Name;
 
             //Notify librarians about new borrow request
-            await hubContext.Clients.Group("Librarians").SendAsync("ReceiveBorrowRequest", book.Title, member);
+            await hubContext.Clients.Group("Librarians").SendAsync("ReceiveBorrowRequest", bookId, member);
             
             
             return RedirectToAction("MyBooks");

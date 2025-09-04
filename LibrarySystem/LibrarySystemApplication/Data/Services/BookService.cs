@@ -1,5 +1,6 @@
 ﻿using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models.Books;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystemApplication.Data.Services
@@ -48,6 +49,14 @@ namespace LibrarySystemApplication.Data.Services
                 await _context.SaveChangesAsync();
                 // Persists the deletion.
             }
+        }
+
+        public async Task<bool> CheckIfBorrowedAsync(string memberId, string bookId)
+        {
+            return await _context.Borrows.AnyAsync(b =>
+                b.MemberId == memberId &&
+                b.BookId == bookId &&
+                (b.Status == BorrowStatus.Approved || b.Status == BorrowStatus.Pending));
         }
 
         // GetAllAsync retrieves all books from the database.
