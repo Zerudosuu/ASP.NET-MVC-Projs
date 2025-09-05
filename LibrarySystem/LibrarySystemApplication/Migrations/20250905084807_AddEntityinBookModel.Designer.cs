@@ -4,6 +4,7 @@ using LibrarySystemApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibrarySystemApplication.Migrations
 {
     [DbContext(typeof(LibrarySystemAppContext))]
-    partial class LibrarySystemAppContextModelSnapshot : ModelSnapshot
+    [Migration("20250905084807_AddEntityinBookModel")]
+    partial class AddEntityinBookModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,6 +103,7 @@ namespace LibrarySystemApplication.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Author")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.PrimitiveCollection<string>("Categories")
@@ -107,6 +111,7 @@ namespace LibrarySystemApplication.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CoverUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DateAdded")
@@ -125,6 +130,7 @@ namespace LibrarySystemApplication.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OpenLibraryKey")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PublishYear")

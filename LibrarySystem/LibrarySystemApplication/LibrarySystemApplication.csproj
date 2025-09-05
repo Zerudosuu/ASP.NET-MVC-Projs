@@ -28,4 +28,9 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Library\Index.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Library\MyBooks.cshtml" />
+  </ItemGroup>
+
 </Project>

@@ -3,6 +3,7 @@ using LibrarySystemApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystemApplication.Controllers
 {
@@ -19,12 +20,12 @@ namespace LibrarySystemApplication.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var books = _context.Books.ToList();
+            var books = await _context.Books.ToListAsync();
             return View(books);
         }
-
+ 
         public IActionResult JoinUs()
         {
             return View();

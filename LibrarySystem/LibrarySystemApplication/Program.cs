@@ -7,6 +7,7 @@ using LibrarySystemApplication.Models.Books;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using LibrarySystemApplication.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,32 +27,46 @@ builder.Services.AddIdentity<Member, IdentityRole>(options =>
 .AddEntityFrameworkStores<LibrarySystemAppContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.AddHttpClient<BookApiService>();
 
 
 builder.Services.AddScoped<IBookService,  BookService>();
 builder.Services.AddScoped<ILibraryServices, LibraryServices>();
-
+builder.Services.AddScoped<BookSeeder>(); 
 builder.Services.AddSignalR();
-
 builder.Services.AddRazorPages(); 
 
 var app = builder.Build();
 
+
+
+// seed books on the database 
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<LibrarySystemAppContext>();
-
-    if (!context.Books.Any())
-    {
-        var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "Models", "Books", "Books.json");
-        var jsonData = File.ReadAllText(jsonPath);
-        var books = JsonSerializer.Deserialize<List<Book>>(jsonData);
-
-        context.Books.AddRange(books);
-        context.SaveChanges();
-    }
+    var seeder = scope.ServiceProvider.GetService<BookSeeder>();
+    
+    if(seeder != null)
+         await seeder.SeedAsync();
 }
 
+
+// //Seeding Manually Books (outdated)
+// using (var scope = app.Services.CreateScope())
+// {
+//     var context = scope.ServiceProvider.GetRequiredService<LibrarySystemAppContext>();
+//
+//     if (!context.Books.Any())
+//     {
+//         var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "Models", "Books", "Books.json");
+//         var jsonData = File.ReadAllText(jsonPath);
+//         var books = JsonSerializer.Deserialize<List<Book>>(jsonData);
+//
+//         context.Books.AddRange(books);
+//         context.SaveChanges();
+//     }
+// }
+
+//Seeding Role
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -64,6 +79,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+//Sedding Librarian and Admin
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();

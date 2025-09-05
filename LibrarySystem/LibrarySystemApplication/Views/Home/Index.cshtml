@@ -1,4 +1,4 @@
-﻿@using LibrarySystemApplication.Models.Account
+@using LibrarySystemApplication.Models.Account
 @using Microsoft.AspNetCore.Identity;
 @model IEnumerable<LibrarySystemApplication.Models.Books.Book>
 @using System.Linq
@@ -10,10 +10,7 @@
     ViewData["Title"] = "Library";
 }
 
-<section class="vh-40 h-75 d-flex justify-content-center align-items-center bg-primary text-white">
-  <h1>Hello, Bootstrap Fullscreen!</h1>
 
-</section>
 
 <section class="vw-90 min-vh-100 d-flex justify-content-center border-black">
     <div class="container d-flex flex-column justify-content-center">
@@ -33,7 +30,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">@book.Author</h5>
                                 <p class="card-text">
-                                    @(!string.IsNullOrEmpty(book.Description) ? book.Description : "No description available.")
+                                    @* @(!string.IsNullOrEmpty(book.Description) ? book.Description : "No description available.") *@
                                 </p>
                                 <a asp-controller="Books" asp-action="Details" asp-route-id="@book.BookId" class="btn btn-primary">
                                     View Details
@@ -49,6 +46,7 @@
             <p>No books available.</p>
         }
     </div>
+    
 </section>
 
 
