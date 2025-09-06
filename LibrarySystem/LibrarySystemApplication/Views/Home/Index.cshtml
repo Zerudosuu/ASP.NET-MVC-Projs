@@ -12,23 +12,22 @@
 
 
 <!-- Hero Section -->
-<header class="bg-primary text-white text-center py-5">
+<section class="hero-section  d-flex align-items-center justify-content-center text-white">
     <div class="container">
-        <h1 class="display-4 fw-bold">Welcome to the Library System</h1>
-        <p class="lead">Search, borrow, and explore books anytime, anywhere.</p>
-        <div class="mt-4">
-            <button type="button" class=" btn btn-primary " data-bs-toggle="modal" data-bs-target="#loginModal"  >Login</button>
-            <a href="/Account/Register" class="btn btn-outline-light btn-lg">Register</a>
-        </div>
+        <h1 class="display-4 fw-bold">Welcome to .LIB</h1>
+        <p class="lead mb-4">Your Gateway to a World of Books</p>
+        <button class="btn btn-lg btn-light text-primary fw-bold" data-bs-toggle="modal"
+            data-bs-target="#loginModal">Member Login</button>
     </div>
-</header>
+</section>
 
 <!-- Search Section -->
 <section class="py-5">
     <div class="container text-center">
         <h2 class="mb-4">Find Your Next Book</h2>
         <form class="d-flex justify-content-center" asp-controller="Books" asp-action="Search" method="get">
-            <input type="text" name="query" class="form-control w-50 me-2" placeholder="Search by title, author, or subject" />
+            <input type="text" name="query" class="form-control w-50 me-2"
+                placeholder="Search by title, author, or subject" />
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
     </div>
@@ -43,11 +42,13 @@
             {
                 <div class="col-md-4 mb-3">
                     <div class="card h-100 shadow-sm">
-                        <img src="@book.CoverUrl" class="card-img-top" alt="Book cover" style="height:250px; object-fit:cover;" />
+                        <img src="@book.CoverUrl" class="card-img-top" alt="Book cover"
+                            style="height:250px; object-fit:cover;" />
                         <div class="card-body">
                             <h5 class="card-title">@book.Title</h5>
                             <p class="card-text">@book.Author</p>
-                            <a asp-controller="Books" asp-action="Details" asp-route-id="@book.BookId" class="btn btn-primary">View Details</a>
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@book.BookId"
+                                class="btn btn-primary">View Details</a>
                         </div>
                     </div>
                 </div>
