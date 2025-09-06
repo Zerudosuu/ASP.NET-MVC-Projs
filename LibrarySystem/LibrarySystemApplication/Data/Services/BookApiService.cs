@@ -69,7 +69,7 @@ public class BookApiService
 
 
             book.CoverUrl = item.TryGetProperty("cover_i", out var coverId)
-                ? $"https://cover.openlibrary.org/b/id/{coverId.GetInt32()}-M.jpg"
+                ? $"https://covers.openlibrary.org/b/id/{coverId.GetInt32}-M.jpg"
                 : null;
 
             book.PublishYear = item.TryGetProperty("first_publish_year", out var publishYearArr)
@@ -86,7 +86,7 @@ public class BookApiService
                     ? languageArr[0].GetString()
                     : null;
 
-            book.Categories = await FetchOtherData(workey);
+            book.Categories = await FetchCategories(workey);
             book.OpenLibraryKey = workey;
    
 
@@ -99,7 +99,7 @@ public class BookApiService
         return books;
     }
 
-    private async Task<List<string?>> FetchOtherData(string workKey)
+    private async Task<List<string?>> FetchCategories(string workKey)
     {
         var subjects = new List<string>();
         try

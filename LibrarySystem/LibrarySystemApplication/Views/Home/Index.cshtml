@@ -11,50 +11,112 @@
 }
 
 
+<!-- Hero Section -->
+<header class="bg-primary text-white text-center py-5">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Welcome to the Library System</h1>
+        <p class="lead">Search, borrow, and explore books anytime, anywhere.</p>
+        <div class="mt-4">
+            <button type="button" class=" btn btn-primary " data-bs-toggle="modal" data-bs-target="#loginModal"  >Login</button>
+            <a href="/Account/Register" class="btn btn-outline-light btn-lg">Register</a>
+        </div>
+    </div>
+</header>
 
-<section class="vw-90 min-vh-100 d-flex justify-content-center border-black">
-    <div class="container d-flex flex-column justify-content-center">
-        <h1 class="mb-4">Featured Books ni @User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value</h1>
+<!-- Search Section -->
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Find Your Next Book</h2>
+        <form class="d-flex justify-content-center" asp-controller="Books" asp-action="Search" method="get">
+            <input type="text" name="query" class="form-control w-50 me-2" placeholder="Search by title, author, or subject" />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</section>
 
-        
-        @if (Model != null && Model.Any())
-        {
-            <div class="row">
-                @foreach (var book in Model.Take(3))
-                {
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-header">
-                                @book.Title
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">@book.Author</h5>
-                                <p class="card-text">
-                                    @* @(!string.IsNullOrEmpty(book.Description) ? book.Description : "No description available.") *@
-                                </p>
-                                <a asp-controller="Books" asp-action="Details" asp-route-id="@book.BookId" class="btn btn-primary">
-                                    View Details
-                                </a>
-                            </div>
+<!-- Featured Books -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-4">Featured Books</h2>
+        <div class="row">
+            @foreach (var book in Model.Take(3)) // optional if you pass model
+            {
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@book.CoverUrl" class="card-img-top" alt="Book cover" style="height:250px; object-fit:cover;" />
+                        <div class="card-body">
+                            <h5 class="card-title">@book.Title</h5>
+                            <p class="card-text">@book.Author</p>
+                            <a asp-controller="Books" asp-action="Details" asp-route-id="@book.BookId" class="btn btn-primary">View Details</a>
                         </div>
                     </div>
-                }
-            </div>
-        }
-        else
-        {
-            <p>No books available.</p>
-        }
+                </div>
+            }
+        </div>
     </div>
-    
 </section>
 
 
-<section class="vw-90 min-vh-100 d-flex justify-content-center border-black"> About</section>
-<section class="vw-90 h-50 d-flex justify-content-center border-black ">Join Us
-    <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Join Us</a>
+<div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Welcome Back!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Email address</label>
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="name@example.com">
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
 
-</section>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" placeholder="Enter your password">
+                            <span class="input-group-text password-toggle">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <div>
+                            <input type="checkbox" class="form-check-input" id="remember">
+                            <label class="form-check-label" for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="text-decoration-none">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-login text-white">Sign In</button>
+
+                    <div class="divider">
+                        <span>or continue with</span>
+                    </div>
+
+                    <div class="social-login">
+                        <button type="button" class="btn btn-social">
+                            <i class="fab fa-google"></i>Google
+                        </button>
+                        <button type="button" class="btn btn-social">
+                            <i class="fab fa-facebook-f"></i>Facebook
+                        </button>
+                    </div>
+
+                    <div class="register-link">
+                        Don't have an account? <a href="#" class="text-decoration-none">Register now</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @* 
 

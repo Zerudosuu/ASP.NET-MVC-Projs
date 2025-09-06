@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace LibrarySystemApplication.Models.Books
 {
     public class Book
-    {
+    {   
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string BookId { get; set; }              // Your DB PK
