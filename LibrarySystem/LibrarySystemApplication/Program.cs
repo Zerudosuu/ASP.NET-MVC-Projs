@@ -1,54 +1,52 @@
+using System.Text.Json;
 using LibrarySystemApplication.Data;
 using LibrarySystemApplication.Data.Services;
 using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Hubs;
 using LibrarySystemApplication.Models.Account;
 using LibrarySystemApplication.Models.Books;
+using LibrarySystemApplication.Seeders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using LibrarySystemApplication.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<LibrarySystemAppContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+builder.Services.AddDbContext<LibrarySystemAppContext>(option =>
+    option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"))
+);
 
-
-builder.Services.AddIdentity<Member, IdentityRole>(options =>
-{
-    options.Password.RequiredUniqueChars = 0;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireDigit = false;
-    options.Password.RequireLowercase = false;
-    options.Password.RequiredLength = 8;
-})
-.AddEntityFrameworkStores<LibrarySystemAppContext>()
-.AddDefaultTokenProviders();
+builder
+    .Services.AddIdentity<Member, IdentityRole>(options =>
+    {
+        options.Password.RequiredUniqueChars = 0;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequiredLength = 8;
+    })
+    .AddEntityFrameworkStores<LibrarySystemAppContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddHttpClient<BookApiService>();
 
-
-builder.Services.AddScoped<IBookService,  BookService>();
+builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ILibraryServices, LibraryServices>();
-builder.Services.AddScoped<BookSeeder>(); 
+builder.Services.AddScoped<BookSeeder>();
 builder.Services.AddSignalR();
-builder.Services.AddRazorPages(); 
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-
-
-// seed books on the database 
+// seed books on the database
 using (var scope = app.Services.CreateScope())
 {
     var seeder = scope.ServiceProvider.GetService<BookSeeder>();
-    
-    if(seeder != null)
-         await seeder.SeedAsync();
-}
 
+    if (seeder != null)
+        await seeder.SeedAsync();
+}
 
 // //Seeding Manually Books (outdated)
 // using (var scope = app.Services.CreateScope())
@@ -88,26 +86,20 @@ using (var scope = app.Services.CreateScope())
     string email = "admin@admin.com";
     string password = "Test1234";
 
-
     string librarianName = "MainLibrarian";
     string librarianEmail = "librarian@librarian.com";
     string librarianPassword = "Test1234";
 
     if (await userManager.FindByEmailAsync(email) == null)
     {
-
         var member = new Member();
         member.Name = name;
         member.Email = email;
         member.UserName = email;
         member.EmailConfirmed = true;
 
-
         await userManager.CreateAsync(member, password);
         await userManager.AddToRoleAsync(member, "Admin");
-
-
-
     }
 
     if (await userManager.FindByEmailAsync(librarianEmail) == null)
@@ -123,7 +115,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -135,19 +126,16 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthentication(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
 app.MapRazorPages();
 
 app.MapHub<LibraryHub>("/libraryHub");
-
 
 app.Run();

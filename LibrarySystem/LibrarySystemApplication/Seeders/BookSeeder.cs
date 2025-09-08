@@ -5,7 +5,7 @@ namespace LibrarySystemApplication.Seeders;
 
 public class BookSeeder
 {
-    private readonly LibrarySystemAppContext _context; 
+    private readonly LibrarySystemAppContext _context;
     private readonly BookApiService _bookApiService;
 
     public BookSeeder(LibrarySystemAppContext context, BookApiService bookApiService)
@@ -16,7 +16,8 @@ public class BookSeeder
 
     public async Task SeedAsync()
     {
-        if (_context.Books.Any()) return;
+        if (_context.Books.Any())
+            return;
 
         var seedQue = new List<string>
         {
@@ -29,17 +30,15 @@ public class BookSeeder
             "Science Fiction",
             "Philosophy",
             "History",
-            "Biology"
+            "Biology",
         };
 
-        foreach (var query  in  seedQue)
+        foreach (var query in seedQue)
         {
-            var books = await _bookApiService.SearchBookAsync(query); 
+            var books = await _bookApiService.SearchBookAsync(query, limit: 5);
             _context.Books.AddRange(books);
         }
-        
+
         await _context.SaveChangesAsync();
     }
-    
-    
 }

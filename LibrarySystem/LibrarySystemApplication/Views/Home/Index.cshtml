@@ -1,123 +1,183 @@
-@using LibrarySystemApplication.Models.Account
+@using LibrarySystemApplication.Models.Account.Control
+@using LibrarySystemApplication.Models.Account;
 @using Microsoft.AspNetCore.Identity;
-@model IEnumerable<LibrarySystemApplication.Models.Books.Book>
+@* @model IEnumerable<LibrarySystemApplication.Models.Books.Book> *@
 @using System.Linq
 
-@* @inject SignInManager<Member> signInManager
-@inject UserManager<Member> userManager *@
+
 
 @{
     ViewData["Title"] = "Library";
 }
 
-
 <!-- Hero Section -->
-<section class="hero-section  d-flex align-items-center justify-content-center text-white">
+<section class="hero-section d-flex align-items-center text-white py-5"
+    style="background: linear-gradient(135deg, #4a6cf7, #3a47d5); min-height: 80vh;">
     <div class="container">
-        <h1 class="display-4 fw-bold">Welcome to .LIB</h1>
-        <p class="lead mb-4">Your Gateway to a World of Books</p>
-        <button class="btn btn-lg btn-light text-primary fw-bold" data-bs-toggle="modal"
-            data-bs-target="#loginModal">Member Login</button>
+        <div class="row align-items-center text-center text-md-start">
+
+            <!-- Left Content -->
+            <div class="col-md-6 mb-4 mb-md-0">
+                <p class="lead text-white-50">Welcome to</p>
+                <h1 class="fw-bolder display-4">.LIB</h1>
+                <p class="lead mb-4">Your Gateway to a World of Books</p>
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-md-start">
+                    <button class="btn btn-lg btn-light text-primary fw-bold shadow-sm" data-bs-toggle="modal"
+                        data-bs-target="#loginModal">Login</button>
+                    <button class="btn btn-lg btn-outline-light fw-bold shadow-sm" data-bs-toggle="modal"
+                        data-bs-target="#registerModal">Register</button>
+                </div>
+            </div>
+
+            <!-- Right Content -->
+            <div class="col-md-6 text-center position-absolute end-0 d-none d-md-block">
+                <img src="https://placehold.co/600x400" alt="Library Illustration"
+                    class="img-fluid rounded-3 shadow-lg">
+            </div>
+
+        </div>
     </div>
 </section>
 
 <!-- Search Section -->
-<section class="py-5">
+<section class="py-5 bg-light">
     <div class="container text-center">
-        <h2 class="mb-4">Find Your Next Book</h2>
+        <h2 class="mb-4 fw-bold">Find Your Next Book</h2>
         <form class="d-flex justify-content-center" asp-controller="Books" asp-action="Search" method="get">
-            <input type="text" name="query" class="form-control w-50 me-2"
+            <input type="text" name="query" class="form-control w-50 me-2 shadow-sm"
                 placeholder="Search by title, author, or subject" />
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary px-4">Search</button>
         </form>
     </div>
 </section>
 
 <!-- Featured Books -->
-<section class="py-5 bg-light">
+<section class="py-5">
     <div class="container">
-        <h2 class="text-center mb-4">Featured Books</h2>
-        <div class="row">
-            @foreach (var book in Model.Take(3)) // optional if you pass model
+        <h2 class="text-center fw-bold mb-5">Featured Books</h2>
+        <div class="row g-4">
+            @* @foreach (var book in Model.Take(3))
             {
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100 shadow-sm">
-                        <img src="@book.CoverUrl" class="card-img-top" alt="Book cover"
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-3">
+                        <img src="@book.CoverUrl" class="card-img-top rounded-top-3" alt="Book cover"
                             style="height:250px; object-fit:cover;" />
                         <div class="card-body">
-                            <h5 class="card-title">@book.Title</h5>
-                            <p class="card-text">@book.Author</p>
+                            <h5 class="card-title fw-bold">@book.Title</h5>
+                            <p class="card-text text-muted">@book.Author</p>
                             <a asp-controller="Books" asp-action="Details" asp-route-id="@book.BookId"
-                                class="btn btn-primary">View Details</a>
+                                class="btn btn-primary w-100">View Details</a>
                         </div>
                     </div>
                 </div>
-            }
+            } *@
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose -->
+<section class="py-5 bg-light  d-flex align-items-center ">
+    <div class="container text-center">
+        <h2 class="mb-5 fw-bold">Why Choose .LIB?</h2>
+        <div class="row g-4 ">
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <i class="fas fa-book fa-3x mb-3 text-primary"></i>
+                    <h5 class="fw-bold">Extensive Collection</h5>
+                    <p class="text-muted">A vast selection of books across all genres and topics.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                    <h5 class="fw-bold">Community Focused</h5>
+                    <p class="text-muted">Join a community of book lovers and participate in events.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 bg-white rounded-3 shadow-sm h-100">
+                    <i class="fas fa-laptop fa-3x mb-3 text-primary"></i>
+                    <h5 class="fw-bold">Easy Access</h5>
+                    <p class="text-muted">Browse and reserve books online from the comfort of your home.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About -->
+<section class="py-5 vh-lg-100 d-flex align-items-center bg-primary min-vh-100" id="about">
+    <div class="container text-center text-lg-start text-md-center text-white">
+        <div class="row align-items-center g-4">
+
+            <!-- Image -->
+            <div class="col-12 col-lg-6 order-2 order-lg-1">
+                <div class="text-center">
+                    <img src="https://placehold.co/600x300" alt="About .LIB"
+                        class="img-fluid shadow-lg w-100 w-md-75 w-lg-100">
+                </div>
+            </div>
+
+            <!-- Text -->
+            <div class="col-12 col-lg-6  order-1 order-lg-2 text-white">
+                <h2 class="fw-bold mb-4">About .LIB</h2>
+                <p>
+                    .LIB is dedicated to fostering a love of reading and learning in our community.
+                    Our mission is to provide access to a diverse range of books and resources,
+                    support lifelong learning, and create a welcoming space for all.
+                    Whether you're looking for your next great read or a quiet place to study, .LIB is here for you.
+                </p>
+            </div>
         </div>
     </div>
 </section>
 
 
-<div class="modal fade" id="loginModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Welcome Back!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
+<!-- Join Us -->
+<section class="py-5 bg-primary text-white text-center min-vh-100 d-flex align-items-center">
+    <div class="container">
+        <h2 class="fw-bold mb-3">Join Our Community</h2>
+        <p class="mb-4">Become a member today and start exploring our collection!</p>
+        <button class="btn btn-light btn-lg text-primary fw-bold shadow-sm" data-bs-toggle="modal"
+            data-bs-target="#loginModal">Get Started</button>
+    </div>
+</section>
+
+<!-- Contact Us -->
+<section id="contact" class="py-5 bg-light text-dark text-center min-vh-100 d-flex align-items-center">
+    <div class="container">
+        <h2 class="fw-bold mb-3">Contact Us</h2>
+        <p class="mb-4">Have questions? We’d love to hear from you.</p>
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
                 <form>
                     <div class="mb-3">
-                        <label class="form-label">Email address</label>
-                        <div class="input-group">
-                            <input type="email" class="form-control" placeholder="name@example.com">
-                            <span class="input-group-text">
-                                <i class="fas fa-envelope"></i>
-                            </span>
-                        </div>
+                        <input type="text" class="form-control" placeholder="Your Name" required>
                     </div>
-
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
-                        <div class="input-group">
-                            <input type="password" class="form-control" placeholder="Enter your password">
-                            <span class="input-group-text password-toggle">
-                                <i class="fas fa-eye"></i>
-                            </span>
-                        </div>
+                        <input type="email" class="form-control" placeholder="Your Email" required>
                     </div>
-
-                    <div class="form-check">
-                        <div>
-                            <input type="checkbox" class="form-check-input" id="remember">
-                            <label class="form-check-label" for="remember">Remember me</label>
-                        </div>
-                        <a href="#" class="text-decoration-none">Forgot password?</a>
+                    <div class="mb-3">
+                        <textarea class="form-control" rows="4" placeholder="Your Message" required></textarea>
                     </div>
-
-                    <button type="submit" class="btn btn-login text-white">Sign In</button>
-
-                    <div class="divider">
-                        <span>or continue with</span>
-                    </div>
-
-                    <div class="social-login">
-                        <button type="button" class="btn btn-social">
-                            <i class="fab fa-google"></i>Google
-                        </button>
-                        <button type="button" class="btn btn-social">
-                            <i class="fab fa-facebook-f"></i>Facebook
-                        </button>
-                    </div>
-
-                    <div class="register-link">
-                        Don't have an account? <a href="#" class="text-decoration-none">Register now</a>
-                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">Send Message</button>
                 </form>
-            </div>
-        </div>
-    </div>
+
+
+</section>
+
+
+<!-- Login Modal -->
+<div class="modal-body">
+    @await Html.PartialAsync("_LoginPartial", new Login())
 </div>
+
+<!-- Register Modal -->
+<div class="modal-body">
+    @await Html.PartialAsync("_RegisteredPartial", new Register())
+</div>
+
 
 @* 
 

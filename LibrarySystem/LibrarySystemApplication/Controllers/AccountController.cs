@@ -14,59 +14,57 @@ namespace LibrarySystemApplication.Controllers
         // Inject the built-in UserManager, which handles creating, finding, and managing users.
         private readonly UserManager<Member> _userManager;
 
-
         // Dependency Injection constructor:
         // ASP.NET Core automatically provides SignInManager and UserManager when this controller is created.
-        public AccountController(SignInManager<Member> signInManager, UserManager<Member> userManager)
+        public AccountController(
+            SignInManager<Member> signInManager,
+            UserManager<Member> userManager
+        )
         {
             _signInManager = signInManager;
             _userManager = userManager;
         }
-
-        // This GET method just shows the Login view.
-        public IActionResult Login()
-        {
-            return View();
-        }
-
 
         // The HttpPost attribute means this method is called when the Login form is submitted.
         // Task<IActionResult> means this runs asynchronously (non-blocking) and eventually returns an IActionResult.
         [HttpPost]
         public async Task<IActionResult> Login(Login model)
         {
-            // ModelState.IsValid checks if the data in "model" passes all validation rules (like [Required], [EmailAddress], etc.).
             if (ModelState.IsValid)
             {
-                // PasswordSignInAsync tries to log in the user by checking Email + Password against the database.
-                // Parameters: userName, password, rememberMe flag, lockoutOnFailure flag.
-
-                var result = await _signInManager.PasswordSignInAsync(model.Email!, model.Password!, model.RememberMe!, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(
+                    model.Email!,
+                    model.Password!,
+                    model.RememberMe!,
+                    lockoutOnFailure: false
+                );
 
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(model.Email!);
                     var roles = await _userManager.GetRolesAsync(user);
-                    
-                    
+
                     if (roles.Contains("Admin"))
                         return RedirectToAction("Dashboard", "Admin");
                     else if (roles.Contains("Librarian"))
                         return RedirectToAction("Requests", "Librarian");
                     else
                         return RedirectToAction("MyBooks", "Member");
-                } // If login is successful
+                }
 
-                // If login failed, add an error message that will show up in the view.
-                ModelState.AddModelError("", "Invalid login attempt");
+                // Failed login → store error in TempData so you can show it in modal
+                TempData["LoginError"] = "Invalid login attempt";
             }
 
-            // If ModelState is invalid OR login failed, return the same view with the entered data.
-                return View(model);
+            // Instead of returning View(model), redirect back to Home (modal can show error)
+            return RedirectToAction("Index", "Home");
         }
 
         // GET method for Register page (just returns the view)
-        public IActionResult Register() { return View(); }
+        public IActionResult Register()
+        {
+            return View();
+        }
 
         [HttpPost]
         public async Task<IActionResult> Register(Register model)
@@ -74,14 +72,14 @@ namespace LibrarySystemApplication.Controllers
             if (ModelState.IsValid)
             {
                 // Create a new Member object from the form input.
-                Member member = new()
-                {
-
-                    Name = model.UserName,
-                    Email = model.Email,
-                    UserName = model.Email, // UserName is usually required in Identity
-                    Address = model.Address
-                };
+                Member member =
+                    new()
+                    {
+                        Name = model.UserName,
+                        Email = model.Email,
+                        UserName = model.Email, // UserName is usually required in Identity
+                        Address = model.Address,
+                    };
 
                 // Save user in database with hashed password.
                 var result = await _userManager.CreateAsync(member, model.Password!);
@@ -111,7 +109,5 @@ namespace LibrarySystemApplication.Controllers
             return RedirectToAction("Index", "Home");
             // nameof is better than a string — avoids typos and supports refactoring.
         }
-
-       
     }
 }

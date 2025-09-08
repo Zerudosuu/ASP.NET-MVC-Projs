@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models.Books;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 
@@ -23,36 +23,38 @@ public class BooksController : Controller
         return View(books);
     }
 
-
     // GET: Books/Details/5
     public async Task<IActionResult> Details(string id)
     {
-        if (id == null) return NotFound();
+        if (id == null)
+            return NotFound();
 
         var book = await _bookService.GetByIdAsync(id);
-        if (book == null) return NotFound();
+        if (book == null)
+            return NotFound();
 
         var memberId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (memberId != null)
         {
             var alreadyBorrowed = await _bookService.CheckIfBorrowedAsync(memberId, id);
-         
+
             ViewBag.AlreadyBorrowed = alreadyBorrowed;
         }
 
         return View(book);
     }
 
-
-
+    [Authorize(Roles = "Admin")]
     // GET: Books/Create
     public IActionResult Create() => View();
 
     // POST: Books/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("BookId,Title,Description,Author,Category,PublishedDate,CoverImageUrl")] Book book)
+    public async Task<IActionResult> Create(
+        [Bind("BookId,Title,Description,Author,Category,PublishedDate,CoverImageUrl")] Book book
+    )
     {
         if (ModelState.IsValid)
         {
@@ -66,7 +68,8 @@ public class BooksController : Controller
     public async Task<IActionResult> Edit(string id)
     {
         var book = await _bookService.GetByIdAsync(id);
-        if (book == null) return NotFound();
+        if (book == null)
+            return NotFound();
 
         return View(book);
     }
@@ -76,7 +79,8 @@ public class BooksController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(string id, Book book)
     {
-        if (id != book.BookId) return NotFound();
+        if (id != book.BookId)
+            return NotFound();
 
         if (ModelState.IsValid)
         {
@@ -90,7 +94,8 @@ public class BooksController : Controller
     public async Task<IActionResult> Delete(string id)
     {
         var book = await _bookService.GetByIdAsync(id);
-        if (book == null) return NotFound();
+        if (book == null)
+            return NotFound();
 
         return View(book);
     }

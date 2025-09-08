@@ -1,7 +1,7 @@
-using LibrarySystemApplication.Models.Books;
-using Microsoft.Extensions.Caching.Memory;
 using System.Globalization;
 using System.Text.Json;
+using LibrarySystemApplication.Models.Books;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace LibrarySystemApplication.Data.Services;
 
@@ -17,11 +17,15 @@ public class BookApiService
         _cache = cache;
         _context = context;
     }
-    //declaring search as async task
 
-    public async Task<List<Book?>> SearchBookAsync(string query)
+    public async Task<List<Book?>> SearchBookAsync(
+        string query,
+        int limit = 5,
+        int page = 1,
+        string? category = null
+    )
     {
-        ////check the DBFirst 
+        ////check the DBFirst
         //var dbBook = _context.Books.FirstOrDefault(b => b.Title.Contains(query));
         //if (dbBook != null)
         //        return dbBook;
@@ -46,13 +50,12 @@ public class BookApiService
         var first = doc.RootElement.GetProperty("docs").EnumerateArray();
         //    return null;
 
-
         var books = new List<Book?>();
 
-        foreach (var item in first.Take(5))
+        foreach (var item in first)
         {
-             var workey = item.TryGetProperty("key", out var keyProp) ? keyProp.GetString(): null;
-            
+            var workey = item.TryGetProperty("key", out var keyProp) ? keyProp.GetString() : null;
+
             var book = new Book();
 
             book.Isbn =
@@ -63,10 +66,10 @@ public class BookApiService
             book.Title = item.GetProperty("title").GetString();
 
             book.Author =
-                item.TryGetProperty("author_name", out var authorArr) && authorArr.GetArrayLength() > 0
+                item.TryGetProperty("author_name", out var authorArr)
+                && authorArr.GetArrayLength() > 0
                     ? authorArr[0].GetString()
                     : "Unknown";
-
 
             book.CoverUrl = item.TryGetProperty("cover_i", out var coverId)
                 ? $"https://covers.openlibrary.org/b/id/{coverId.GetInt32}-M.jpg"
@@ -87,16 +90,28 @@ public class BookApiService
                     : null;
 
             book.Categories = await FetchCategories(workey);
+
             book.OpenLibraryKey = workey;
-   
 
             books.Add(book);
         }
 
-
-        
-     
         return books;
+    }
+
+    public async Task<List<Book?>> SeedBooksAsync(string query, int limit = 5)
+    {
+        return await SearchBookAsync(query, limit);
+    }
+
+    public async Task<List<Book?>> SearchBooksForUserAsync(
+        string query,
+        int page = 1,
+        int pageSize = 20,
+        string? category = null
+    )
+    {
+        return await SearchBookAsync(query, limit: pageSize, page: page, category: category);
     }
 
     private async Task<List<string?>> FetchCategories(string workKey)
@@ -106,7 +121,7 @@ public class BookApiService
         {
             var url = $"https://openlibrary.org{workKey}.json";
             var response = await _client.GetStringAsync(url);
-            
+
             using var doc = JsonDocument.Parse(response);
             if (doc.RootElement.TryGetProperty("subjects", out var subJarr))
             {
@@ -122,5 +137,44 @@ public class BookApiService
         }
 
         return subjects;
+    }
+
+    private async Task<List<string>> FetchDescription(string workKey)
+    {
+        var descriptions = new List<string>();
+        try
+        {
+            var url = $"https://openlibrary.org{workKey}.json";
+            var response = await _client.GetStringAsync(url);
+
+            using var doc = JsonDocument.Parse(response);
+            if (doc.RootElement.TryGetProperty("description", out var descJarr))
+            {
+                if (descJarr.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var descJ in descJarr.EnumerateArray())
+                    {
+                        descriptions.Add(descJ.GetString());
+                    }
+                }
+                else if (descJarr.ValueKind == JsonValueKind.String)
+                {
+                    descriptions.Add(descJarr.GetString());
+                }
+                else if (descJarr.ValueKind == JsonValueKind.Object)
+                {
+                    if (descJarr.TryGetProperty("value", out var valueProp))
+                    {
+                        descriptions.Add(valueProp.GetString());
+                    }
+                }
+            }
+        }
+        catch
+        {
+            //ignore
+        }
+
+        return descriptions;
     }
 }
