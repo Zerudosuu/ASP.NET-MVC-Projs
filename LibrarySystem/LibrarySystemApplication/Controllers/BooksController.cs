@@ -38,7 +38,6 @@ public class BooksController : Controller
         if (memberId != null)
         {
             var alreadyBorrowed = await _bookService.CheckIfBorrowedAsync(memberId, id);
-
             ViewBag.AlreadyBorrowed = alreadyBorrowed;
         }
 

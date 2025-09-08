@@ -14,10 +14,17 @@ namespace LibrarySystemApplication.Controllers
         private readonly SignInManager<Member> _signInManager;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, SignInManager<Member> signInManager)
+        private readonly LibrarySystemAppContext _context;
+
+        public HomeController(
+            ILogger<HomeController> logger,
+            SignInManager<Member> signInManager,
+            LibrarySystemAppContext context
+        )
         {
             _logger = logger;
             _signInManager = signInManager;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -25,12 +32,9 @@ namespace LibrarySystemApplication.Controllers
             if (_signInManager.IsSignedIn(User))
                 return RedirectToAction("MainLibrary", "Home");
 
-            return View();
-        }
+            var books = _context.Books.Take(3).ToList();
 
-        public IActionResult JoinUs()
-        {
-            return View();
+            return View(books);
         }
 
         [Route("/MainLibrary")]

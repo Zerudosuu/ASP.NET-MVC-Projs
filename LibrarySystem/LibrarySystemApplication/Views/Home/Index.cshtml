@@ -1,9 +1,9 @@
 @using LibrarySystemApplication.Models.Account.Control
 @using LibrarySystemApplication.Models.Account;
+@using LibrarySystemApplication.Models.Books
 @using Microsoft.AspNetCore.Identity;
-@* @model IEnumerable<LibrarySystemApplication.Models.Books.Book> *@
 @using System.Linq
-
+@model IEnumerable<Book>
 
 
 @{
@@ -26,6 +26,8 @@
                         data-bs-target="#loginModal">Login</button>
                     <button class="btn btn-lg btn-outline-light fw-bold shadow-sm" data-bs-toggle="modal"
                         data-bs-target="#registerModal">Register</button>
+                    <button class="btn btn-lg btn-outline-light fw-bold shadow-sm"
+                        id="registerTestModalButton">test</button>
                 </div>
             </div>
 
@@ -56,21 +58,7 @@
     <div class="container">
         <h2 class="text-center fw-bold mb-5">Featured Books</h2>
         <div class="row g-4">
-            @* @foreach (var book in Model.Take(3))
-            {
-                <div class="col-md-4">
-                    <div class="card h-100 shadow-sm border-0 rounded-3">
-                        <img src="@book.CoverUrl" class="card-img-top rounded-top-3" alt="Book cover"
-                            style="height:250px; object-fit:cover;" />
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">@book.Title</h5>
-                            <p class="card-text text-muted">@book.Author</p>
-                            <a asp-controller="Books" asp-action="Details" asp-route-id="@book.BookId"
-                                class="btn btn-primary w-100">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            } *@
+
         </div>
     </div>
 </section>
@@ -196,3 +184,12 @@ else
 {
     <h1>Hi Member @fullName</h1>
 } *@
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).on("click", "#registerTestModalButton", function () {
+            console.log("Register Test Button Clicked!");
+        });
+    </script>
+}

@@ -12,7 +12,8 @@
 <div class="row d-flex min-vh-100 overflow-hidden align-items-center justify-content-center border">
 
     <div class="col-md-3 card p-3">
-        <h2 class="text-center text-info"> Register </h2>
+
+        <button id="registerButton" class="btn btn-primary">Register Test Console</button>
         <form asp-action="Register" method="post">
             <div asp-validation-summary="ModelOnly"></div>
             <div class="mb-1">
@@ -45,10 +46,16 @@
                     <a asp-action="Login" class="text-decoration-none">Have an account?</a>
                 </div>
                 <div class="col-4">
-                    <input type="submit" value="Register" class="btn btn-primary btn-sm float-end"/>
+                    <input type="submit" value="Register" class="btn btn-primary btn-sm float-end" />
                 </div>
             </div>
         </form>
     </div>
 
 </div>
+
+
+@section Scripts {
+
+
+}
