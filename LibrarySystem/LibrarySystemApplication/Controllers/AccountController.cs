@@ -47,9 +47,9 @@ namespace LibrarySystemApplication.Controllers
                     if (roles.Contains("Admin"))
                         return RedirectToAction("Dashboard", "Admin");
                     else if (roles.Contains("Librarian"))
-                        return RedirectToAction("Requests", "Librarian");
+                        return RedirectToAction("Dashboard", "Librarian");
                     else
-                        return RedirectToAction("MyBooks", "Member");
+                        return RedirectToAction("MainLibrary", "Home");
                 }
 
                 // Failed login → store error in TempData so you can show it in modal

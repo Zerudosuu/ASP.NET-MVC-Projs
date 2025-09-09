@@ -11,6 +11,7 @@
     <title>@ViewData["Title"]</title>
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="~/css/custom/utilities.css" rel="stylesheet" />
     <link href="~/css/custom/components.css" rel="stylesheet" />
@@ -43,9 +44,6 @@
                                     Library</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Profile">Profile</a>
-                            </li>
-                            <li class="nav-item">
                                 <form method="post" asp-area="" asp-controller="Account" asp-action="Logout"
                                     class="d-inline">
                                     <button type="submit" class="btn btn-link nav-link">Logout</button>
@@ -73,11 +71,18 @@
 
     <div class="container-fluid">
 
-        <div class="row">
-            <aside class="col-3">@Html.Partial("_SharedDashboard")</aside>
-            <main role="main" class="col-9">
+        <div>
+            <main role="main">
                 @RenderBody()
             </main>
+
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div>
+                    <aside>@Html.Partial("_SharedDashboard")</aside>
+                </div>
+            }
+
         </div>
 
         <footer class="border-top footer text-muted mt-auto">

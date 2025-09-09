@@ -13,19 +13,27 @@ namespace LibrarySystemApplication.Controllers;
 public class MemberController : Controller
 {
     private readonly ILibraryServices _libraryServices;
-  
 
-
-  public  MemberController(ILibraryServices libraryServices)
+    public MemberController(ILibraryServices libraryServices)
     {
         _libraryServices = libraryServices;
     }
 
-    public IActionResult AcountBoard()
+    public IActionResult AccountBoard()
     {
         return View();
     }
-    
+
+    public IActionResult Notification()
+    {
+        return View();
+    }
+
+    public IActionResult MyRequests()
+    {
+        return View();
+    }
+
     [HttpGet]
     public async Task<IActionResult> MyBooks()
     {
@@ -33,23 +41,27 @@ public class MemberController : Controller
         var barrowed = await _libraryServices.GetBorrowedBooksAsync(memberId!);
         return View(barrowed);
     }
-    
+
     [HttpPost]
-    public async Task<IActionResult> Borrow(string bookId, [FromServices] IHubContext<LibraryHub> hubContext )
+    public async Task<IActionResult> Borrow(
+        string bookId,
+        [FromServices] IHubContext<LibraryHub> hubContext
+    )
     {
         var memberId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         try
         {
             //create barrow with pending status
             await _libraryServices.BorrowBookAsync(memberId, bookId, BorrowStatus.Pending);
-            
+
             var book = await _libraryServices.GetSpecificBookAsync(bookId);
             var member = User.Identity.Name;
 
             //Notify librarians about new borrow request
-            await hubContext.Clients.Group("Librarians").SendAsync("ReceiveBorrowRequest", bookId, member);
-            
-            
+            await hubContext
+                .Clients.Group("Librarians")
+                .SendAsync("ReceiveBorrowRequest", bookId, member);
+
             return RedirectToAction("MyBooks");
         }
         catch (Exception ex)
@@ -58,7 +70,7 @@ public class MemberController : Controller
             return RedirectToAction("AccountBoard");
         }
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Return(string bookId)
     {
@@ -66,8 +78,4 @@ public class MemberController : Controller
         await _libraryServices.ReturnBookAsync(bookId, memberId); // ✅ fixed order
         return RedirectToAction("MyBooks");
     }
-
-
-
-
 }

@@ -1,3 +1,8 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<LibrarySystemApplication.Models.Account.Member> UserManager
+@using System.Security.Claims
+
+
 <!-- Toggle Button -->
 <button class="btn btn-light toggle-btn shadow-sm" onclick="toggleSidebar()">
     <i class="bi bi-list fs-5"></i>
@@ -7,10 +12,10 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header p-3">
         <div class="d-flex align-items-center justify-content-between">
-            <h5 class="mb-0">Dashboard</h5>
+            <h5 class="mb-0">Feed</h5>
             <div class="d-flex gap-2">
                 <button class="btn btn-sm btn-light">
-                    <i class="bi bi-gear"></i>
+                    <i class="bi bi-gear"> </i>
                 </button>
                 <button class="btn btn-sm btn-light">
                     <i class="bi bi-bell"></i>
@@ -19,50 +24,72 @@
         </div>
     </div>
 
-    <!-- User Profile -->
-    <div class="p-3 border-bottom">
-        <div class="d-flex align-items-center">
-            <img src="https://via.placeholder.com/40" class="rounded-circle me-2" alt="User">
-            <div>
-                <h6 class="mb-0">John Doe</h6>
-                <small class="text-muted">
-                    <span class="user-status"></span>
-                    Online
-                </small>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Librarian"))
+    {
+        <!-- Admin/Librarian Sidebar -->
+        <div class="p-3 border-bottom">
+            <h6 class="mb-0">@User?.Identity?.Name (Admin)</h6>
+            <small class="text-muted">Administrator Panel</small>
+        </div>
+
+        <nav class="nav flex-column mt-2">
+            <a href="/Admin/Dashboard" class="nav-link">
+                <i class="bi bi-speedometer2 me-2"></i>
+                Dashboard
+            </a>
+            <a href="/Admin/ManageBooks" class="nav-link">
+                <i class="bi bi-book-half me-2"></i>
+                Manage Books
+            </a>
+            <a href="/Admin/Requests" class="nav-link">
+                <i class="bi bi-folder-check me-2"></i>
+                Manage Requests
+            </a>
+        </nav>
+    }
+    else
+    {
+        <!-- Member Sidebar -->
+        <div class="p-3 border-bottom">
+            <div class="d-flex align-items-center">
+                <img src="https://placehold.co/50" class="rounded-circle me-2" alt="User">
+                <div>
+                    <h6 class="mb-0">
+                        @User?.Identity?.Name
+                        (@User.FindFirst(ClaimTypes.Role)?.Value)
+                    </h6>
+                    <small class="text-muted"><span class="user-status"></span> Online</small>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Navigation -->
-    <nav class="nav flex-column mt-2">
-        <a href="#" class="nav-link active">
-            <i class="bi bi-house me-2"></i>
-            Dashboard
-        </a>
-        <a href="#" class="nav-link">
-            <i class="bi bi-person me-2"></i>
-            Profile
-        </a>
-        <a href="#" class="nav-link d-flex justify-content-between align-items-center">
-            <div>
-                <i class="bi bi-chat me-2"></i>
-                Messages
-            </div>
-            <span class="notification-badge">3</span>
-        </a>
-        <a href="#" class="nav-link">
-            <i class="bi bi-calendar me-2"></i>
-            Calendar
-        </a>
-        <a href="#" class="nav-link">
-            <i class="bi bi-graph-up me-2"></i>
-            Analytics
-        </a>
-        <a href="#" class="nav-link">
-            <i class="bi bi-folder me-2"></i>
-            Projects
-        </a>
-    </nav>
+        <nav class="nav flex-column mt-2">
+            <a href="/MainLibrary" class="nav-link @IsActive("/MainLibrary")">
+                <i class="bi bi-house me-2"></i>
+                Feed
+            </a>
+            <a href="/Member/AccountBoard" class="nav-link @IsActive("/Member/AccountBoard")">
+                <i class="bi bi-person me-2"></i>
+                Profile
+            </a>
+            <a href="/Member/MyBooks" class="nav-link d-flex justify-content-between align-items-center"
+                @IsActive("/Member/MyBooks")>
+                <div>
+                    <i class="bi bi-book me-2"></i>
+                    My Books
+                </div>
+                <span class="notification-badge">3</span>
+            </a>
+            <a href="/Member/MyRequests" class="nav-link @IsActive("/Member/MyRequests")">
+                <i class="bi bi-folder me-2"></i>
+                Requests
+            </a>
+        </nav>
+    }
+
+
+
 
     @* <!-- Recent Activity -->
         <div class="p-3 mt-3">
@@ -87,3 +114,20 @@
             </div>
         </div> *@
 </div>
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.toggle-btn');
+        sidebar.classList.toggle('collapsed');
+        toggleBtn.classList.toggle('collapsed');
+    }
+
+
+</script>
+
+
+@functions {
+    string IsActive(string path) =>
+    ViewContext.HttpContext.Request.Path.StartsWithSegments(path) ? "active" : "";
+}

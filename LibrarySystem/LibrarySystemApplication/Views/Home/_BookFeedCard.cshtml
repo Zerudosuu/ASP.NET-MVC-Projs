@@ -1,0 +1,15 @@
+@model IEnumerable<LibrarySystemApplication.Models.Books.Book>
+
+@foreach (var book in Model)
+{
+    <div class="book-card">
+        <h3>@book.Title</h3>
+        <p>Author: @book.Author</p>
+        <p>Published: @book.Publisher</p>
+
+        @foreach (var category in book.Categories)
+        {
+            <span class="badge bg-secondary me-1">@category</span>
+        }
+    </div>
+}
