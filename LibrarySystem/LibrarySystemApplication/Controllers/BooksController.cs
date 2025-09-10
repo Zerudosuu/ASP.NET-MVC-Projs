@@ -41,7 +41,7 @@ public class BooksController : Controller
             ViewBag.AlreadyBorrowed = alreadyBorrowed;
         }
 
-        return View(book);
+        return PartialView("_BookPartial", book);
     }
 
     [Authorize(Roles = "Admin")]

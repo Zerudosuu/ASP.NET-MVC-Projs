@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using LibrarySystemApplication.Data;
+using LibrarySystemApplication.Data.Services;
+using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models;
 using LibrarySystemApplication.Models.Account;
 using Microsoft.AspNetCore.Authorization;
@@ -16,24 +18,31 @@ namespace LibrarySystemApplication.Controllers
 
         private readonly LibrarySystemAppContext _context;
 
+        private readonly IBookService _bookService;
+
+        private readonly BookApiService _bookApiService;
+
         public HomeController(
             ILogger<HomeController> logger,
             SignInManager<Member> signInManager,
-            LibrarySystemAppContext context
+            LibrarySystemAppContext context,
+            IBookService bookService,
+            BookApiService bookApiService
         )
         {
             _logger = logger;
             _signInManager = signInManager;
             _context = context;
+
+            _bookService = bookService;
+            _bookApiService = bookApiService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (_signInManager.IsSignedIn(User))
                 return RedirectToAction("MainLibrary", "Home");
-
-            var books = _context.Books.Take(3).ToList();
-
+            var books = await _context.Books.Take(4).ToListAsync();
             return View(books);
         }
 
@@ -53,6 +62,12 @@ namespace LibrarySystemApplication.Controllers
                     RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
                 }
             );
+        }
+
+        public async Task<IActionResult> PopulateBooksInLibrary()
+        {
+            var books = await _bookService.GetAllAsync();
+            return PartialView("_BookFeedCard", books);
         }
     }
 }

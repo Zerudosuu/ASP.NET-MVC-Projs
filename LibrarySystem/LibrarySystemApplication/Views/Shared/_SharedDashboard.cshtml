@@ -3,8 +3,7 @@
 @using System.Security.Claims
 
 
-<!-- Toggle Button -->
-<button class="btn btn-light toggle-btn shadow-sm" onclick="toggleSidebar()">
+<button class="btn btn-light toggle-btn shadow-sm " onclick="toggleSidebar()">
     <i class="bi bi-list fs-5"></i>
 </button>
 
@@ -13,13 +12,15 @@
     <div class="sidebar-header p-3">
         <div class="d-flex align-items-center justify-content-between">
             <h5 class="mb-0">Feed</h5>
-            <div class="d-flex gap-2">
-                <button class="btn btn-sm btn-light">
-                    <i class="bi bi-gear"> </i>
+
+            <div class="d-flex align-items-center">
+
+                <button class="btn btn-light btn-sm ms-2" id="toggleSidebarBtn" onclick="toggleSidebar()"
+                    style="display:none;">
+                    <i class="bi bi-box-arrow-right"></i>
                 </button>
-                <button class="btn btn-sm btn-light">
-                    <i class="bi bi-bell"></i>
-                </button>
+
+
             </div>
         </div>
     </div>
@@ -27,7 +28,7 @@
 
     @if (User.IsInRole("Admin") || User.IsInRole("Librarian"))
     {
-        <!-- Admin/Librarian Sidebar -->
+
         <div class="p-3 border-bottom">
             <h6 class="mb-0">@User?.Identity?.Name (Admin)</h6>
             <small class="text-muted">Administrator Panel</small>
@@ -73,19 +74,24 @@
                 <i class="bi bi-person me-2"></i>
                 Profile
             </a>
-            <a href="/Member/MyBooks" class="nav-link d-flex justify-content-between align-items-center"
-                @IsActive("/Member/MyBooks")>
-                <div>
-                    <i class="bi bi-book me-2"></i>
-                    My Books
-                </div>
-                <span class="notification-badge">3</span>
+            <a href="/Member/MyBooks" class="nav-link @IsActive("/Member/MyBooks")">
+                <i class="bi bi-book me-2"></i>
+                My Books
             </a>
             <a href="/Member/MyRequests" class="nav-link @IsActive("/Member/MyRequests")">
                 <i class="bi bi-folder me-2"></i>
                 Requests
             </a>
         </nav>
+
+        <div class="position-absolute bottom-0  w-100 p-3 border-top">
+            <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
+                <button type="submit" class="btn btn-light btn-sm">
+                    Logout <i class=" bi-door-closed"></i>
+                </button>
+
+            </form>
+        </div>
     }
 
 
@@ -116,18 +122,29 @@
 </div>
 
 <script>
+    let isOpen = true;
+
     function toggleSidebar() {
+        isOpen = !isOpen;
+
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.querySelector('.toggle-btn');
+        const buttonClose = document.getElementById('toggleSidebarBtn');
+
         sidebar.classList.toggle('collapsed');
         toggleBtn.classList.toggle('collapsed');
+
+        if (isOpen) {
+            buttonClose.style.display = 'block';
+            toggleBtn.style.display = 'none';
+        } else {
+            buttonClose.style.display = 'none';
+            toggleBtn.style.display = 'block';
+        }
     }
-
-
 </script>
-
 
 @functions {
     string IsActive(string path) =>
-    ViewContext.HttpContext.Request.Path.StartsWithSegments(path) ? "active" : "";
+    ViewContext.HttpContext.Request.Path.StartsWithSegments(path) ? "active disabled" : "";
 }

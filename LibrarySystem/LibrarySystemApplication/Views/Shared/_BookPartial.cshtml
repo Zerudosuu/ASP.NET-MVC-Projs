@@ -1,2 +1,12 @@
-<section class="py-5 vh-lg-100 d-flex align-items-center bg-primary">
-</section>
+@model LibrarySystemApplication.Models.Books.Book
+
+<div>
+    <h4>@Model.Title</h4>
+    <p><strong>Author:</strong> @Model.Author</p>
+    <p><strong>Publisher:</strong> @Model.Publisher</p>
+    <p><strong>Year:</strong> @Model.PublishYear</p>
+
+    <button class="btn btn-success" onclick="borrowBook('@Model.BookId')">
+        Borrow this Book
+    </button>
+</div>
