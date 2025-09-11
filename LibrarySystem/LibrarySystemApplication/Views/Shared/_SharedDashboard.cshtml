@@ -28,22 +28,22 @@
 
     @if (User.IsInRole("Admin") || User.IsInRole("Librarian"))
     {
-
+ 
         <div class="p-3 border-bottom">
             <h6 class="mb-0">@User?.Identity?.Name (Admin)</h6>
             <small class="text-muted">Administrator Panel</small>
         </div>
 
         <nav class="nav flex-column mt-2">
-            <a href="/Admin/Dashboard" class="nav-link">
+            <a href="/Librarian/Dashboard" class="nav-link">
                 <i class="bi bi-speedometer2 me-2"></i>
                 Dashboard
             </a>
-            <a href="/Admin/ManageBooks" class="nav-link">
+            <a href="/Librarian/ManageBooks" class="nav-link">
                 <i class="bi bi-book-half me-2"></i>
                 Manage Books
             </a>
-            <a href="/Admin/Requests" class="nav-link">
+            <a href="/Librarian/Requests" class="nav-link">
                 <i class="bi bi-folder-check me-2"></i>
                 Manage Requests
             </a>

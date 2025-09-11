@@ -29,18 +29,24 @@ public class MemberController : Controller
         return View();
     }
 
-    public IActionResult MyRequests()
-    {
-        return View();
-    }
-
+    
     [HttpGet]
-    public async Task<IActionResult> MyBooks()
+    public async Task<IActionResult> MyRequests()
     {
         var memberId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var barrowed = await _libraryServices.GetBorrowedBooksAsync(memberId!);
         return View(barrowed);
     }
+    
+    [HttpGet]
+    public async Task<IActionResult> MyBooks()
+    {
+        var memberId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var barrowed = await _libraryServices.GetBorrowedBooksAsync(memberId!);
+        var approvedBooks = barrowed.Where(b => b.Status == BorrowStatus.Approved);
+        return View(approvedBooks);
+    }
+    
 
     [HttpPost]
     public async Task<IActionResult> Borrow(
@@ -62,7 +68,7 @@ public class MemberController : Controller
                 .Clients.Group("Librarians")
                 .SendAsync("ReceiveBorrowRequest", bookId, member);
 
-            return RedirectToAction("MyBooks");
+            return RedirectToAction("MyRequests");
         }
         catch (Exception ex)
         {

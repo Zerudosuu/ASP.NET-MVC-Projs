@@ -8,12 +8,15 @@ namespace LibrarySystemApplication.Controllers;
 public class LibrarianController : Controller
 {
     private readonly ILibraryServices _libraryServices;
+    private readonly IBookService _bookService;
     
 
-    public LibrarianController(ILibraryServices libraryServices)
+    public LibrarianController(ILibraryServices libraryServices, IBookService bookService)
     {
         _libraryServices = libraryServices;
-    }
+        _bookService = bookService;
+    }   
+   
 
     [HttpPost]
     public async Task<IActionResult> ApproveBorrow(string borrowId)
@@ -35,6 +38,12 @@ public class LibrarianController : Controller
     {
         var borrowquee = await _libraryServices.GetAllBookRequested(BorrowStatus.Pending);
         return View(borrowquee);
+    }
+    
+    public  async Task<IActionResult> ManageBooks()
+    {
+        var books = await _bookService.GetAllAsync();
+        return View(books);
     }
 
     // GET

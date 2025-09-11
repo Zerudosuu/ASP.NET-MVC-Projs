@@ -6,7 +6,20 @@
     <p><strong>Publisher:</strong> @Model.Publisher</p>
     <p><strong>Year:</strong> @Model.PublishYear</p>
 
-    <button class="btn btn-success" onclick="borrowBook('@Model.BookId')">
-        Borrow this Book
-    </button>
+   
+    @if (ViewBag.AlreadyBorrowed == true)
+    {
+        <button class="btn btn-secondary" disabled>You already Borrowed this</button>
+    }
+    else
+    {
+    <form asp-controller="Member" asp-action="Borrow" method="post">
+        <input type="hidden" name="bookId" value="@Model.BookId"/>
+        <button class="btn btn-success" type="submit">
+            Borrow this Book
+        </button>
+    </form>
+    }
+    
+  
 </div>

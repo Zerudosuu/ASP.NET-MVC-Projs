@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Todo.Models.TodoTask>
+
+@{
+    ViewData["Title"] = "Task Dashboard";
+    var ongoingTasks = Model.Where(t => t.Status == Todo.Models.StatusTask.Ongoing).ToList();
+    var overdueTasks = Model.Where(t => t.Status == Todo.Models.StatusTask.Overdue).ToList();
+    var completedTasks = Model.Where(t => t.Status == Todo.Models.StatusTask.Completed).ToList();
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">📊 Task Dashboard</h2>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Ongoing</h5>
+                    <p class="display-6">@ongoingTasks.Count</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-danger shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Overdue</h5>
+                    <p class="display-6">@overdueTasks.Count</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Completed</h5>
+                    <p class="display-6">@completedTasks.Count</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">All Tasks</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Created At</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var task in Model)
+                    {
+                        <tr>
+                            <td>@task.Title</td>
+                            <td>@task.Description</td>
+                            <td>@task.CreatedAt.ToShortDateString()</td>
+                            <td>@task.DueDate?.ToShortDateString()</td>
+                            <td>
+                                @if (task.Status == Todo.Models.StatusTask.Ongoing)
+                                {
+                                    <span class="badge bg-primary">Ongoing</span>
+                                }
+                                else if (task.Status == Todo.Models.StatusTask.Overdue)
+                                {
+                                    <span class="badge bg-danger">Overdue</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">Completed</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-controller="Tasks" asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-info">View</a>
+                                <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
