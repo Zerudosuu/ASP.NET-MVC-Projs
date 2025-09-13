@@ -10,6 +10,13 @@
 <div class="container mt-4">
     <h2 class="mb-4">📊 Task Dashboard</h2>
 
+    <form>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search tasks..." aria-label="Search tasks"
+                aria-describedby="button-search">
+            <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
+        </div>
+    </form>
     <!-- Summary Cards -->
     <div class="row mb-4">
         <div class="col-md-4">
@@ -39,6 +46,12 @@
             </div>
         </div>
     </div>
+
+    <!-- Button to trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#todoModal">
+        Add Task
+    </button>
+
 
     <!-- Task Table -->
     <div class="card shadow-sm">
@@ -80,9 +93,12 @@
                                 }
                             </td>
                             <td>
-                                <a asp-controller="Tasks" asp-action="Details" asp-route-id="@task.Id" class="btn btn-sm btn-info">View</a>
-                                <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id" class="btn btn-sm btn-warning">Edit</a>
-                                <a asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.Id" class="btn btn-sm btn-danger">Delete</a>
+                                <a asp-controller="Tasks" asp-action="Details" asp-route-id="@task.Id"
+                                    class="btn btn-sm btn-info">View</a>
+                                <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id"
+                                    class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.Id"
+                                    class="btn btn-sm btn-danger">Delete</a>
                             </td>
                         </tr>
                     }
@@ -91,3 +107,6 @@
         </div>
     </div>
 </div>
+
+
+<div> </div>@await Html.PartialAsync("_CreateANewTaskModal", new Todo.Models.TodoTask())
