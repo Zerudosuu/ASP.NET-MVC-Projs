@@ -8,6 +8,9 @@
 }
 
 <div class="container mt-4">
+
+
+
     <h2 class="mb-4">📊 Task Dashboard</h2>
 
     <form>
@@ -93,12 +96,7 @@
                                 }
                             </td>
                             <td>
-                                <a asp-controller="Tasks" asp-action="Details" asp-route-id="@task.Id"
-                                    class="btn btn-sm btn-info">View</a>
-                                <a asp-controller="Tasks" asp-action="Edit" asp-route-id="@task.Id"
-                                    class="btn btn-sm btn-warning">Edit</a>
-                                <a asp-controller="Tasks" asp-action="Delete" asp-route-id="@task.Id"
-                                    class="btn btn-sm btn-danger">Delete</a>
+                                <button class="btn btn-sm btn-info" onclick="ShowTaskDetailsModal(@task.Id)"> View </button>
                             </td>
                         </tr>
                     }
@@ -110,3 +108,46 @@
 
 
 <div> </div>@await Html.PartialAsync("_CreateANewTaskModal", new Todo.Models.TodoTask())
+
+
+<div class="modal fade" id="taskDetailsModal" tabindex="-1" aria-labelledby="taskDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const ShowTaskDetailsModal = (taskId) => {
+            // Load partial view into modal
+            $("#taskDetailsModal .modal-content").load("/Todo/Details/" + taskId, () => {
+
+                // Bootstrap modal
+                const modal = new bootstrap.Modal(document.getElementById("taskDetailsModal"));
+                modal.show();
+
+                // Now that content is loaded, grab the edit button
+                const enableEdit = document.querySelector("#taskDetailsModal #enableEditBtn");
+
+                if (enableEdit) {
+                    enableEdit.addEventListener("click", () => {
+                        console.log("Edit Clicked!");
+
+                        // ✅ Here you can toggle form fields to editable
+                        document.querySelectorAll("#taskDetailsModal input, #taskDetailsModal textarea").forEach(el => {
+                            el.removeAttribute("readonly");
+
+                            $("#editTaskForm select").prop("disabled", false);
+
+                            $("#enableEditBtn").addClass("d-none");
+                            $("#saveTaskBtn").removeClass("d-none");
+                        });
+                    });
+                }
+            });
+        };
+    </script>
+}

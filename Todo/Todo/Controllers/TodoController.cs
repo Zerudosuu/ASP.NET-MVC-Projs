@@ -19,21 +19,20 @@ namespace Todo.Controllers
             return View(tasks);
         }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Create(TodoTask task)
         {
             if (ModelState.IsValid)
             {
                 await _todoService.AddTaskAsync(task);
-
                 return RedirectToAction(nameof(Index));
             }
-            return View(task);
+            else
+            {
+                TempData["Error"] = "Invalid data. Please correct the errors and try again.";
+            }
+
+            return View(nameof(Index));
         }
 
         public IActionResult Edit(int id)
@@ -43,7 +42,7 @@ namespace Todo.Controllers
             {
                 return NotFound();
             }
-            return View(task);
+            return PartialView("_EditTaskModal", task);
         }
 
         [HttpPost]
@@ -83,7 +82,8 @@ namespace Todo.Controllers
             {
                 return NotFound();
             }
-            return View(task);
+
+            return PartialView("_taskModal", task);
         }
     }
 }

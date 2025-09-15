@@ -1,0 +1,64 @@
+@model Todo.Models.TodoTask
+
+<!-- Modal Header -->
+<div class="modal-header">
+    <h5 class="modal-title" id="taskDetailsLabel">Task Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<!-- Modal Body -->
+<div class="modal-body">
+    @using (Html.BeginForm("Edit", "Todo", FormMethod.Post, new { id = "editTaskForm" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Title, new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @readonly = "readonly" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.Description, new { @class = "form-label" })
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 3, @readonly = "readonly" })
+        </div>
+
+        <div class="mb-3">
+            @Html.LabelFor(m => m.CreatedAt, new { @class = "form-label" })
+            @Html.TextBoxFor(
+            m => m.CreatedAt,
+                "{0:yyyy-MM-ddTHH:mm}",
+                new { @class = "form-control", type = "datetime-local", @readonly = "readonly" }
+                )
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.DueDate, new { @class = "form-label" })
+        @Html.TextBoxFor(
+                m => m.DueDate,
+                "{0:yyyy-MM-dd}",
+                new { @class = "form-control", type = "date", @readonly = "readonly" }
+                )
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Status, new { @class = "form-label" })
+        @Html.DropDownListFor(
+                m => m.Status,
+                new SelectList(Enum.GetValues(typeof(Todo.Models.StatusTask))),
+                new { @class = "form-select", disabled = "disabled" }
+                )
+    </div>
+        }
+</div>
+
+<!-- Modal Footer -->
+<div class="modal-footer">
+    <form asp-action="Delete" asp-controller="Todo" method="post" onsubmit="return confirm('Delete this task?');">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+
+    <button type="button" class="btn btn-warning" id="enableEditBtn">Edit</button>
+    <button type="submit" form="editTaskForm" class="btn btn-primary d-none" id="saveTaskBtn">Save</button>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>
