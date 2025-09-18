@@ -5,6 +5,11 @@
     var ongoingTasks = Model.Where(t => t.Status == Todo.Models.StatusTask.Ongoing).ToList();
     var overdueTasks = Model.Where(t => t.Status == Todo.Models.StatusTask.Overdue).ToList();
     var completedTasks = Model.Where(t => t.Status == Todo.Models.StatusTask.Completed).ToList();
+
+    var Tasks = from t in Model
+                where t.Status == Todo.Models.StatusTask.Ongoing || t.Status == Todo.Models.StatusTask.Overdue
+                orderby t.DueDate ascending
+                select t;
 }
 
 <div class="container mt-4">
@@ -51,7 +56,7 @@
     </div>
 
     <!-- Button to trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#todoModal">
+    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#todoModal">
         Add Task
     </button>
 
@@ -65,6 +70,7 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
+                        <th>Complete?</th>
                         <th>Title</th>
                         <th>Description</th>
                         <th>Created At</th>
@@ -77,6 +83,8 @@
                     @foreach (var task in Model)
                     {
                         <tr>
+                            <td> <input type="checkbox" @(task.Status == Todo.Models.StatusTask.Completed ? "checked" :
+                                                                                        "") /> </td>
                             <td>@task.Title</td>
                             <td>@task.Description</td>
                             <td>@task.CreatedAt.ToShortDateString()</td>

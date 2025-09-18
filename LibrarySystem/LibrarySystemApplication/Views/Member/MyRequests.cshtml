@@ -4,41 +4,114 @@
     ViewData["Title"] = "My Requests";
 }
 
+<div class="container mt-4">
+    <h2 class="mb-4">📚 My Requested Books</h2>
 
-
-<div class="container">
-
-    <h2>My Borrowed Books</h2>
     @if (Model.Any())
     {
-        <ul class="list-group">
-            @foreach (var book in Model)
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var borrow in Model)
             {
-                <li class="list-group-item">
-                    <p>@book.Book.Title - Borrowed on @book.BorrowDate</p>
-                    <p>@book.Status</p>
-                </li>
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+
+                        <form method="post" asp-controller="Member"asp-action="CancelRequest">
+                            <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
+                            <button type="submit" class="btn btn-danger">Cancel Request</button>
+                        </form>
+
+
+                        @if (!string.IsNullOrEmpty(borrow.Book.CoverUrl))
+                        {
+                            <img src="@borrow.Book.CoverUrl" class="card-img-top" alt="@borrow.Book.Title" style="height: 250px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                                <span class="text-muted">No Cover</span>
+                            </div>
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@borrow.Book.Title</h5>
+                            <p class="card-text">
+                                <strong>Requested on:</strong> @borrow.BorrowDate.ToShortDateString() <br />
+                                <strong>Status:</strong>
+                                <span class="badge bg-@(borrow.Status switch {
+                                    BorrowStatus.Pending => "warning",
+                                    BorrowStatus.Approved => "success",
+                                    BorrowStatus.Rejected => "danger",
+                                    BorrowStatus.Overdue => "danger",
+                                    BorrowStatus.Returned => "secondary",
+                                    _ => "info"
+                                })">
+                                    @borrow.Status
+                                </span>
+                            </p>
+                        </div>
+                        <div class="card-footer text-muted text-center small">
+                            Member: @borrow.Member?.Name
+                        </div>
+                    </div>
+                </div>
             }
-        </ul>
+        </div>
     }
     else
     {
-        <p>You have not borrowed any books yet.</p>
+        <p class="text-muted">You have not requested any books yet.</p>
     }
-
 </div>
+
 
 
 <!-- Toast container -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
     <div id="liveToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
-         aria-atomic="true">
+        aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body" id="toastMessage">
                 <!-- SignalR message goes here -->
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
+                aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/libraryHub")
+        .build();
+
+    connection.on("ReceiveNotification", (message) => {
+        // put message into toast
+        document.getElementById("toastMessage").textContent = message;
+
+        // show toast
+        const toastEl = document.getElementById('liveToast');
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    });
+
+    connection.start().catch(err => console.error(err));
+</script>
+
+
+<!-- Toast container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="liveToast" class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">
+                <!-- SignalR message goes here -->
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
         </div>
     </div>
 </div>

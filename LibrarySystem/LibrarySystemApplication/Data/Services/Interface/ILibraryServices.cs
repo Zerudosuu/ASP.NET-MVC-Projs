@@ -10,12 +10,13 @@ namespace LibrarySystemApplication.Data.Services.Interface
         Task ReturnBookAsync(string bookId, string memberId);
 
         Task ApproveBorrow(string borrowId);
-        
+
         Task RejectBorrowAsync(string borrowId, string reason = null);
-        
-        Task <IEnumerable<Borrow>> GetAllBookRequested(BorrowStatus? borrowStatus);
 
-        Task <Book> GetSpecificBookAsync(string bookId);
+        Task<IEnumerable<Borrow>> GetAllBookRequested(BorrowStatus? borrowStatus);
 
+        Task<Book> GetSpecificBookAsync(string bookId);
+
+        Task DeleteRequestAsync(string borrowId);
     }
 }

@@ -1,11 +1,10 @@
-﻿using LibrarySystemApplication.Data.Services.Interface;
+﻿using System.Data;
+using LibrarySystemApplication.Data.Services.Interface;
+using LibrarySystemApplication.Hubs;
 using LibrarySystemApplication.Models;
+using LibrarySystemApplication.Models.Books;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using LibrarySystemApplication.Hubs;
-using System.Data;
-using LibrarySystemApplication.Models.Books;
-
 
 namespace LibrarySystemApplication.Data.Services
 {
@@ -22,9 +21,11 @@ namespace LibrarySystemApplication.Data.Services
 
         public async Task ApproveBorrow(string borrowId)
         {
-           var borrowRecord = await _context.Borrows.Include(b => b.Book).FirstOrDefaultAsync(b => b.BorrowId == borrowId);
+            var borrowRecord = await _context
+                .Borrows.Include(b => b.Book)
+                .FirstOrDefaultAsync(b => b.BorrowId == borrowId);
 
-            if(borrowRecord == null)
+            if (borrowRecord == null)
                 throw new InvalidOperationException("Borrow record not found");
 
             borrowRecord.Status = BorrowStatus.Approved;
@@ -32,19 +33,23 @@ namespace LibrarySystemApplication.Data.Services
             await _context.SaveChangesAsync();
 
             // Optionally, you might want to notify the member that their borrow request has been approved.
-            await _hubContext.Clients.User(borrowRecord.MemberId).SendAsync("ReceiveNotification", $"Your borrow request for book '{borrowRecord.Book.Title}' has been approved.");
-
+            await _hubContext
+                .Clients.User(borrowRecord.MemberId)
+                .SendAsync(
+                    "ReceiveNotification",
+                    $"Your borrow request for book '{borrowRecord.Book.Title}' has been approved."
+                );
         }
 
         public async Task RejectBorrowAsync(string borrowId, string reason = null)
         {
-            var borrowRecord =
-                await _context.Borrows.Include(b => b.Book)
-                    .FirstOrDefaultAsync(b => b.BorrowId == borrowId);
+            var borrowRecord = await _context
+                .Borrows.Include(b => b.Book)
+                .FirstOrDefaultAsync(b => b.BorrowId == borrowId);
 
             if (borrowRecord == null)
-                    throw new InvalidOperationException("Borrow record not found");
-            
+                throw new InvalidOperationException("Borrow record not found");
+
             borrowRecord.Status = BorrowStatus.Rejected;
             _context.Borrows.Update(borrowRecord);
             await _context.SaveChangesAsync();
@@ -56,22 +61,23 @@ namespace LibrarySystemApplication.Data.Services
                 message += $" Reason: {reason}";
             }
 
-            await _hubContext.Clients.User(borrowRecord.MemberId)
+            await _hubContext
+                .Clients.User(borrowRecord.MemberId)
                 .SendAsync("ReceiveNotification", message);
         }
 
         public async Task BorrowBookAsync(string memberId, string bookId, BorrowStatus borrowStatus)
         {
-
-
             if (string.IsNullOrWhiteSpace(memberId))
                 throw new ArgumentNullException(nameof(memberId));
 
             if (string.IsNullOrWhiteSpace(bookId))
                 throw new ArgumentNullException(nameof(bookId));
 
-            //this code is a linq lambda expression just like mapping in JS, this returning bool 
-            var alreadyBorrowed = await _context.Borrows.AnyAsync(b => b.BookId  == bookId && b.ReturnDate == null);
+            //this code is a linq lambda expression just like mapping in JS, this returning bool
+            var alreadyBorrowed = await _context.Borrows.AnyAsync(b =>
+                b.BookId == bookId && b.ReturnDate == null
+            );
 
             if (alreadyBorrowed)
                 throw new InvalidOperationException("Book is already borrowed");
@@ -80,22 +86,22 @@ namespace LibrarySystemApplication.Data.Services
             {
                 MemberId = memberId,
                 BookId = bookId,
-                BorrowDate = DateTime.UtcNow,  // <-- important
-                Status = BorrowStatus.Pending  // or whatever makes sense
+                BorrowDate = DateTime.UtcNow, // <-- important
+                Status =
+                    BorrowStatus.Pending // or whatever makes sense
+                ,
             };
             await _context.Borrows.AddAsync(borrow);
             await _context.SaveChangesAsync();
-        
-        
         }
 
         public async Task<IEnumerable<Borrow>> GetBorrowedBooksAsync(string memberId)
         {
-
             if (string.IsNullOrWhiteSpace(memberId))
                 throw new ArgumentNullException(nameof(memberId));
 
-           return await _context.Borrows.Where(b => b.MemberId == memberId && b.ReturnDate == null)
+            return await _context
+                .Borrows.Where(b => b.MemberId == memberId && b.ReturnDate == null)
                 .Include(b => b.Book) // Include book details
                 .Select(b => new Borrow
                 {
@@ -104,9 +110,9 @@ namespace LibrarySystemApplication.Data.Services
                     Book = b.Book,
                     BorrowDate = b.BorrowDate,
                     ReturnDate = b.ReturnDate,
-                    Status = b.Status
-                }).ToListAsync();
-
+                    Status = b.Status,
+                })
+                .ToListAsync();
         }
 
         public async Task ReturnBookAsync(string bookId, string memberId)
@@ -117,26 +123,29 @@ namespace LibrarySystemApplication.Data.Services
             if (string.IsNullOrWhiteSpace(bookId))
                 throw new ArgumentNullException(nameof(bookId));
 
-
-            var borrowRecord = await _context.Borrows
-                .FirstOrDefaultAsync(b => b.BookId == bookId && b.ReturnDate == null);
+            var borrowRecord = await _context.Borrows.FirstOrDefaultAsync(b =>
+                b.BookId == bookId && b.ReturnDate == null
+            );
 
             if (borrowRecord == null)
-                throw new InvalidOperationException("this book is not currently borrowed by this member");
+                throw new InvalidOperationException(
+                    "this book is not currently borrowed by this member"
+                );
 
             borrowRecord.ReturnDate = DateTime.Now;
 
             _context.Borrows.Update(borrowRecord);
             await _context.SaveChangesAsync();
         }
+
         public async Task<IEnumerable<Borrow>> GetAllBookRequested(BorrowStatus? filter = null)
         {
-            return await _context.Borrows.Where(b => b.Status == filter)
+            return await _context
+                .Borrows.Where(b => b.Status == filter)
                 .Include(b => b.Book)
                 .Include(b => b.Member)
                 .ToListAsync();
         }
-
 
         public async Task<Book> GetSpecificBookAsync(string bookId)
         {
@@ -149,6 +158,14 @@ namespace LibrarySystemApplication.Data.Services
             return book;
         }
 
+        public async Task DeleteRequestAsync(string borrowId)
+        {
+            var book = await _context.Borrows.FindAsync(borrowId);
+            if (book == null)
+                throw new KeyNotFoundException("Borrow record not found");
 
+            _context.Borrows.Remove(book);
+            await _context.SaveChangesAsync();
+        }
     }
 }

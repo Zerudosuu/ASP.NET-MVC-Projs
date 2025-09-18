@@ -4,27 +4,66 @@
     ViewData["Title"] = "My Books";
 }
 
+<div class="container mt-4">
+    <h2 class="mb-4">📚 My Borrowed Books</h2>
 
-
-<div class="container">
-
-    <h2>My Borrowed Books</h2>
     @if (Model.Any())
     {
-        <ul class="list-group">
-            @foreach (var book in Model)
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var borrow in Model)
             {
-                <li class="list-group-item">
-                    <p>@book.Book.Title - Borrowed on @book.BorrowDate</p>
-                    <p>@book.Status</p>
-                </li>
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <img src="@(string.IsNullOrEmpty(borrow.Book.CoverUrl) 
+                                                                                                                                                                                         ? "https://via.placeholder.com/150x220?text=No+Cover" 
+                                                                                                                                                                                         : borrow.Book.CoverUrl)"
+                            class="card-img-top" alt="@borrow.Book.Title cover" style="height: 220px; object-fit: cover;" />
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">@borrow.Book.Title</h5>
+                            <p class="card-text">
+                                <strong>Author:</strong> @borrow.Book.Author <br />
+                                <strong>Status:</strong>
+                                <span class="badge @(borrow.Status == BorrowStatus.Overdue ? "bg-danger" : "bg-primary")">
+                                    @borrow.Status
+                                </span>
+                                <br />
+                                <strong>Borrowed on:</strong> @borrow.BorrowDate.ToShortDateString() <br />
+                                <strong>Due Date:</strong> @(borrow.DueDate?.ToShortDateString() ?? "N/A") <br />
+                                <strong>Returned:</strong> @(borrow.ReturnDate?.ToShortDateString() ?? "Not yet")
+                            </p>
+                        </div>
+                        <div class="card-footer bg-white">
+                            @if (borrow.IsOverDue == true)
+                            {
+                                <span class="text-danger fw-bold">⚠ Overdue!</span>
+                            }
+                            else if (borrow.Status == BorrowStatus.Returned)
+                            {
+                                <span class="text-success fw-bold">✔ Returned</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">On Loan</span>
+                                <form asp-controller="Member" asp-action="Return" method="post">
+                                    <input type="hidden" name="bookId" value="@borrow.Book.BookId" />
+                                    <button class="btn btn-warning btn-sm mt-2" type="submit">
+                                        Return Book
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </div>
             }
-        </ul>
+        </div>
     }
     else
     {
-        <p>You have not borrowed any books yet.</p>
+        <div class="alert alert-info">You have not borrowed any books yet.</div>
     }
+</div>
 
 </div>
 
