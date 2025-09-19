@@ -2,6 +2,7 @@ using System.Security.Claims;
 using LibrarySystemApplication.Data.Services;
 using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Hubs;
+using LibrarySystemApplication.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,17 @@ public class MemberController : Controller
 
     public IActionResult AccountBoard()
     {
-        return View();
+        var model = new ProfileViewModel
+        {
+            Member = new Models.Account.Member
+            {
+                Name = User.Identity.Name,
+                Email = User.FindFirst(ClaimTypes.Email)?.Value,
+                UserName = User.Identity.Name,
+            },
+        };
+
+        return View(model);
     }
 
     public IActionResult Notification()
