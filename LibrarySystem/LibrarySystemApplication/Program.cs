@@ -33,6 +33,7 @@ builder.Services.AddHttpClient<BookApiService>();
 
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<ILibraryServices, LibraryServices>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<BookSeeder>();
 builder.Services.AddSignalR();
 builder.Services.AddRazorPages();

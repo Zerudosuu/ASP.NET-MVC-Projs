@@ -28,25 +28,46 @@
 
     @if (User.IsInRole("Admin") || User.IsInRole("Librarian"))
     {
- 
+
         <div class="p-3 border-bottom">
             <h6 class="mb-0">@User?.Identity?.Name (Admin)</h6>
             <small class="text-muted">Administrator Panel</small>
         </div>
 
         <nav class="nav flex-column mt-2">
-            <a href="/Librarian/Dashboard" class="nav-link">
-                <i class="bi bi-speedometer2 me-2"></i>
-                Dashboard
-            </a>
-            <a href="/Librarian/ManageBooks" class="nav-link">
-                <i class="bi bi-book-half me-2"></i>
-                Manage Books
-            </a>
-            <a href="/Librarian/Requests" class="nav-link">
-                <i class="bi bi-folder-check me-2"></i>
-                Manage Requests
-            </a>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="@Url.Action("Dashboard", "Admin")" class="nav-link">
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    Dashboard
+                </a>
+
+                <a href="@Url.Action("ManageBooks", "Admin")" class="nav-link">
+                    <i class="bi bi-book-half me-2"></i>
+                    Manage Books
+                </a>
+
+                <a href="@Url.Action("ManageLibrarians", "Admin")" class="nav-link">
+                    <i class="bi bi-people me-2"></i>
+                    Manage Librarians
+                </a>
+            }
+            else if (User.IsInRole("Librarian"))
+            {
+                <a href="@Url.Action("Dashboard", "Librarian")" class="nav-link">
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    Dashboard
+                </a>
+                <a href="@Url.Action("ManageBooks", "Librarian")" class="nav-link">
+                    <i class="bi bi-book-half me-2"></i>
+                    Manage Books
+                </a>
+                <a href="@Url.Action("Requests", "Librarian")" class="nav-link">
+                    <i class="bi bi-folder-check me-2"></i>
+                    Manage Requests
+                </a>
+            }
         </nav>
     }
     else
@@ -83,16 +104,17 @@
                 Requests
             </a>
         </nav>
-
-        <div class="position-absolute bottom-0  w-100 p-3 border-top">
-            <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
-                <button type="submit" class="btn btn-light btn-sm">
-                    Logout <i class=" bi-door-closed"></i>
-                </button>
-
-            </form>
-        </div>
     }
+
+
+
+    <div class="position-absolute bottom-0 w-100 p-3 border-top">
+        <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
+            <button type="submit" class="btn btn-light btn-sm">
+                Logout <i class="bi bi-door-closed"></i>
+            </button>
+        </form>
+    </div>
 
 
 

@@ -4,25 +4,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LibrarySystemApplication.Controllers;
 
-[Authorize(Roles = "Librarian")]
+[Authorize(Roles = "Librarian, Admin")]
 public class LibrarianController : Controller
 {
     private readonly ILibraryServices _libraryServices;
     private readonly IBookService _bookService;
-    
 
     public LibrarianController(ILibraryServices libraryServices, IBookService bookService)
     {
         _libraryServices = libraryServices;
         _bookService = bookService;
-    }   
-   
+    }
 
     [HttpPost]
     public async Task<IActionResult> ApproveBorrow(string borrowId)
     {
         await _libraryServices.ApproveBorrow(borrowId);
-
 
         return RedirectToAction("Requests");
     }
@@ -34,13 +31,13 @@ public class LibrarianController : Controller
         return RedirectToAction("Requests");
     }
 
-    public async Task <IActionResult> Requests()
+    public async Task<IActionResult> Requests()
     {
         var borrowquee = await _libraryServices.GetAllBookRequested(BorrowStatus.Pending);
         return View(borrowquee);
     }
-    
-    public  async Task<IActionResult> ManageBooks()
+
+    public async Task<IActionResult> ManageBooks()
     {
         var books = await _bookService.GetAllAsync();
         return View(books);

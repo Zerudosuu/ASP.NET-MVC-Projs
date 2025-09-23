@@ -1,0 +1,43 @@
+@model IEnumerable<LibrarySystemApplication.Models.Account.Member>
+
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4">👨‍🏫 Manage Librarians</h2>
+
+    <div class="table-responsive shadow-sm rounded-3">
+        <table class="table table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>UserName</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var librarian in Model)
+                {
+                    <tr>
+                        <td>@librarian.Name</td>
+                        <td>@librarian.Email</td>
+                        <td>@librarian.UserName</td>
+                        <td>
+                            <!-- Remove button -->
+                            <form asp-action="RemoveLibrarian" asp-route-id="@librarian.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i> Remove
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add new librarian button -->
+    <div class="mt-3">
+        <a href="@Url.Action("AddLibrarian", "Admin")" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add New Librarian
+        </a>
+    </div>
+</div>

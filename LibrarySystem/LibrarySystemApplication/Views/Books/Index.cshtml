@@ -1,95 +1,62 @@
 ﻿@model IEnumerable<LibrarySystemApplication.Models.Books.Book>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Books";
 }
 
-<h1>Index</h1>
+<div class="container">
+    <h1>Books</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <p>
+        <a asp-action="Create" class="btn btn-success">Add New Book</a>
+    </p>
+</div>
 
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
 
+<table class="table table-striped align-middle container">
+    <thead class="table-light">
+        <tr>
+            <th>Cover</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Year</th>
 
-@* <table class="table"> *@
-@*     <thead> *@
-@*         <tr> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Title) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Description) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Author) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.Category) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.PublishedDate) *@
-@*             </th> *@
-@*             <th> *@
-@*                 @Html.DisplayNameFor(model => model.CoverImageUrl) *@
-@*             </th> *@
-@*             <th></th> *@
-@*         </tr> *@
-@*     </thead> *@
-@*     <tbody> *@
-@* @foreach (var item in Model) { *@
-@*         <tr> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.Title) *@
-@*             </td> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.Description) *@
-@*             </td> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.Author) *@
-@*             </td> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.Category) *@
-@*             </td> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.PublishedDate) *@
-@*             </td> *@
-@*             <td> *@
-@*                 @Html.DisplayFor(modelItem => item.CoverImageUrl) *@
-@*             </td> *@
-@*             <td> *@
-@*                 <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> | *@
-@*                 <a asp-action="Details" asp-route-id="@item.BookId">Details</a> | *@
-@*                 <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a> *@
-@*             </td> *@
-@*         </tr> *@
-@* } *@
-@*     </tbody> *@
-@* </table> *@
-
-@* <div class="container mt-4">
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+            <th>Available</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach (var item in Model)
         {
-            <div class="col">
-                <div class="card h-100">
-                    <img src="https://placehold.co/600x400" class="card-img-top" alt="@item.Title">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Title</h5>
-                        <p class="card-text">@item.Description</p>
-                    </div>
-                    <div class="card-footer">
-                        <a asp-action="Edit" asp-route-id="@item.BookId" class="btn btn-primary w-100">Edit</a>
-                        <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.BookId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a>
-                    </div>
-                </div>
-            </div>
+            <tr>
+                <td style="width: 80px;">
+                    <img src="@(string.IsNullOrEmpty(item.CoverUrl) ? "https://placehold.co/60x90" : item.CoverUrl)"
+                        class="img-thumbnail" style="max-height: 90px;" alt="@item.Title" />
+                </td>
+                <td>@item.Title</td>
+                <td>@item.Author</td>
+                <td>@item.PublishYear</td>
+
+                <td>
+                    @if (item.IsAvailable)
+                    {
+                        <span class="badge bg-success">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">No</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.BookId" class="btn btn-sm btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.BookId" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.BookId" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
         }
-    </div>
-</div> *@
+    </tbody>
+</table>

@@ -1,17 +1,102 @@
+@using LibrarySystemApplication.Models.Account
+@using Microsoft.AspNetCore.Identity
+@model LibrarySystemApplication.Models.ViewModels.LibrarianDashBoardViewModel
 
-@{
-    Layout = null;
-}
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4">📊 Librarian Dashboard</h2>
 
-<!DOCTYPE html>
+    <div class="row g-3">
+        <!-- Total Users -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people fs-1 text-primary"></i>
+                    <h5 class="card-title mt-2">Users</h5>
+                    <h3 class="fw-bold">@Model.UserCount</h3>
+                </div>
+            </div>
+        </div>
 
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      
+        <!-- Total Books -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-half fs-1 text-success"></i>
+                    <h5 class="card-title mt-2">Books</h5>
+                    <h3 class="fw-bold">@Model.BookCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Borrowed Books -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-journal-arrow-down fs-1 text-warning"></i>
+                    <h5 class="card-title mt-2">Borrowed</h5>
+                    <h3 class="fw-bold">@Model.BorrowedCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overdue Books -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-exclamation-triangle fs-1 text-danger"></i>
+                    <h5 class="card-title mt-2">Overdue</h5>
+                    <h3 class="fw-bold">@Model.OverdueCount</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <h3 class="fw-bold mb-3">👥 User List</h3>
+
+        <!-- Filter Dropdown -->
+        <form method="get" asp-action="Dashboard" class="mb-3">
+            <div class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <select name="role" class="form-select" onchange="this.form.submit()">
+                        <option value="All" selected="@(Model.SelectedRole == "All")">All</option>
+                        <option value="Librarian" selected="@(Model.SelectedRole == "Librarian")">Librarians</option>
+                        <option value="Member" selected="@(Model.SelectedRole == "Member")">Members</option>
+
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <!-- User Table -->
+        <div class="table-responsive shadow-sm rounded-3">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role(s)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Members)
+                    {
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td>
+                            <!-- Show roles dynamically -->
+                            @string.Join(", ", await Context.RequestServices
+                                                        .GetRequiredService<UserManager<Member>>()
+                                                        .GetRolesAsync(user))
+                        </td>
+                    </tr>
+                                        }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
 </div>
-</body>
-</html>
