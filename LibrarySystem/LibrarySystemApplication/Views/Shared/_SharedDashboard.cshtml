@@ -1,5 +1,6 @@
+@using LibrarySystemApplication.Models.Account
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<LibrarySystemApplication.Models.Account.Member> UserManager
+@inject UserManager<Member> userManager
 @using System.Security.Claims
 
 
@@ -30,40 +31,40 @@
     {
 
         <div class="p-3 border-bottom">
-            <h6 class="mb-0">@User?.Identity?.Name (Admin)</h6>
-            <small class="text-muted">Administrator Panel</small>
-        </div>
+            <h6 class="mb-0">@userManager.Users.FirstOrDefault(u => u.Id ==
+                            User.FindFirstValue(ClaimTypes.NameIdentifier))?.Name</h6>
+        <small class="text-muted">@User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value</small>
+    </div>
+    <nav class="nav flex-column mt-2">
 
-        <nav class="nav flex-column mt-2">
-
-            @if (User.IsInRole("Admin"))
+        @if (User.IsInRole("Admin"))
             {
-                <a href="@Url.Action("Dashboard", "Admin")" class="nav-link">
+                <a href="@Url.Action("Dashboard", "Admin")" class="nav-link @Html.IsActive("/Admin/Dashboard")">
                     <i class="bi bi-speedometer2 me-2"></i>
                     Dashboard
                 </a>
 
-                <a href="@Url.Action("ManageBooks", "Admin")" class="nav-link">
+                <a href="@Url.Action("ManageBooks", "Admin")" class="nav-link @Html.IsActive("/Admin/ManageBooks")">
                     <i class="bi bi-book-half me-2"></i>
                     Manage Books
                 </a>
 
-                <a href="@Url.Action("ManageLibrarians", "Admin")" class="nav-link">
+                <a href="@Url.Action("ManageLibrarians", "Admin")" class="nav-link @Html.IsActive("/Admin/ManageLibrarians")">
                     <i class="bi bi-people me-2"></i>
                     Manage Librarians
                 </a>
             }
             else if (User.IsInRole("Librarian"))
             {
-                <a href="@Url.Action("Dashboard", "Librarian")" class="nav-link">
+                <a href="@Url.Action("Dashboard", "Librarian")" class="nav-link @Html.IsActive("/Librarian/Dashboard")">
                     <i class="bi bi-speedometer2 me-2"></i>
                     Dashboard
                 </a>
-                <a href="@Url.Action("ManageBooks", "Librarian")" class="nav-link">
+                <a href="@Url.Action("ManageBooks", "Librarian")" class="nav-link @Html.IsActive("/Librarian/ManageBooks")">
                     <i class="bi bi-book-half me-2"></i>
                     Manage Books
                 </a>
-                <a href="@Url.Action("Requests", "Librarian")" class="nav-link">
+                <a href="@Url.Action("Requests", "Librarian")" class="nav-link @Html.IsActive("/Librarian/Requests")">
                     <i class="bi bi-folder-check me-2"></i>
                     Manage Requests
                 </a>
@@ -87,19 +88,19 @@
         </div>
 
         <nav class="nav flex-column mt-2">
-            <a href="/MainLibrary" class="nav-link @IsActive("/MainLibrary")">
+            <a href="/MainLibrary" class="nav-link @Html.IsActive("/MainLibrary")">
                 <i class="bi bi-house me-2"></i>
                 Feed
             </a>
-            <a href="/Member/AccountBoard" class="nav-link @IsActive("/Member/AccountBoard")">
+            <a href="/Member/AccountBoard" class="nav-link @Html.IsActive("/Member/AccountBoard")">
                 <i class="bi bi-person me-2"></i>
                 Profile
             </a>
-            <a href="/Member/MyBooks" class="nav-link @IsActive("/Member/MyBooks")">
+            <a href="/Member/MyBooks" class="nav-link @Html.IsActive("/Member/MyBooks")">
                 <i class="bi bi-book me-2"></i>
                 My Books
             </a>
-            <a href="/Member/MyRequests" class="nav-link @IsActive("/Member/MyRequests")">
+            <a href="/Member/MyRequests" class="nav-link @Html.IsActive("/Member/MyRequests")">
                 <i class="bi bi-folder me-2"></i>
                 Requests
             </a>
@@ -165,8 +166,3 @@
         }
     }
 </script>
-
-@functions {
-    string IsActive(string path) =>
-    ViewContext.HttpContext.Request.Path.StartsWithSegments(path) ? "active disabled" : "";
-}

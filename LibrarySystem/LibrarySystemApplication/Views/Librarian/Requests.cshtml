@@ -4,38 +4,46 @@
     ViewData["Title"] = "Pending Borrow Requests";
 }
 
-<h2>Pending Requests</h2>
-<table class="table table-bordered" id="pendingTable">
-    <thead>
-    <tr>
-        <th>Book</th>
-        <th>Member</th>
-        <th>Requested On</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var borrow in Model)
-    {
-        <tr>
-            <td>@borrow.Book.Title</td>
-            <td>@borrow.Member.UserName</td>
-            <td>@borrow.BorrowDate.ToShortDateString()</td>
-            <td>@borrow.Status</td>
-            <td>
-                    <form asp-action="ApproveBorrow" method="post" style="display:inline">
-                    <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
-                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                </form>
-                    <form asp-action="RejectBorrow" method="post" style="display:inline">
-                    <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
-                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                </form>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class=" container mt-4">
+    <h1 class="h3">Pending Borrow Requests</h1>
+    <p class="text-muted">Manage and approve pending borrow requests from members.</p>
+
+
+    <table class="table table-bordered" id="pendingTable">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Member</th>
+                <th>Requested On</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var borrow in Model)
+            {
+                <tr>
+                    <td>@borrow.Book.Title</td>
+                    <td>@borrow.Member.UserName</td>
+                    <td>@borrow.BorrowDate.ToShortDateString()</td>
+                    <td>@borrow.Status</td>
+                    <td>
+                        <form asp-action="ApproveBorrow" method="post" style="display:inline">
+                            <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        </form>
+                        <form asp-action="RejectBorrow" method="post" style="display:inline">
+                            <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
@@ -44,15 +52,15 @@
         .withUrl("/libraryHub")
         .build();
 
-        connection.on("ReceiveBorrowRequest", (bookId, memberName) => {
-            const table = document.getElementById("pendingTable").getElementsByTagName("tbody")[0];
-            const row = table.insertRow();
-            row.innerHTML = `<td>${bookId}</td>
+    connection.on("ReceiveBorrowRequest", (bookId, memberName) => {
+        const table = document.getElementById("pendingTable").getElementsByTagName("tbody")[0];
+        const row = table.insertRow();
+        row.innerHTML = `<td>${bookId}</td>
                              <td>${memberName}</td>
                              <td>${new Date().toLocaleDateString()}</td>
                             <td><span class="badge bg-warning">Pending</span></td>`;
-        });
-        connection.start().catch(function (err) {
-            return console.error(err.toString());
-        });
+    });
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
 </script>

@@ -2,16 +2,17 @@
 @model Register
 
 <!--- Registger Modal (To be implemented) -->
-<div class="modal fade" id="registerModal" tabindex="-1">
+<div class="modal fade" id="@(ViewBag.ModalId ?? "registerModal")" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Create Your .Lib Account</h5>
+                <h5 class="modal-title">@(ViewBag.ModalTitle ?? "Create Your .Lib Account")</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 
             </div>
             <div class="modal-body">
                 <form asp-controller="Account" asp-action="Register" method="post">
+                    <input type="hidden" name="memberRole" value="@(ViewBag.UserRole ?? "Member")" />
                     <div class="mb-3">
                         <label class="form-label">Full Name</label>
                         <div class="input-group">
@@ -48,7 +49,8 @@
                             </span>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-register text-light">Register</button>
+                    <button type="submit" class="btn btn-primary btn-register text-light"> @(ViewBag.UserRole ==
+                                                "Librarian" ? "Add Librarian" : "Register")</button>
                     <div class="register-link mt-3">
                         Already have an account? <a href="#" class="text-decoration-none" data-bs-toggle="modal"
                             data-bs-target="#loginModal" data-bs-dismiss="modal">Login here</a>

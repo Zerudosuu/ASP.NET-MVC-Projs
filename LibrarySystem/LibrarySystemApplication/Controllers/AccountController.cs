@@ -67,7 +67,7 @@ namespace LibrarySystemApplication.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(Register model)
+        public async Task<IActionResult> Register(Register model, string memberRole = "Member")
         {
             if (ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace LibrarySystemApplication.Controllers
 
                 // Save user in database with hashed password.
                 var result = await _userManager.CreateAsync(member, model.Password!);
-                await _userManager.AddToRoleAsync(member, "Member");
+                await _userManager.AddToRoleAsync(member, memberRole);
 
                 if (result.Succeeded)
                 {

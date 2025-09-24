@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models.Account;
+using LibrarySystemApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibrarySystemApplication.Controllers;
@@ -25,7 +26,7 @@ public class AdminController : Controller
         else
             users = await _adminService.GetAllMembersAsync();
 
-        var model = new Models.ViewModels.LibrarianDashBoardViewModel
+        var model = new AdminDashboardViewModel
         {
             UserCount = await _adminService.GetTotalUsersAsync(),
             BookCount = await _adminService.GetTotalBooksAsync(),

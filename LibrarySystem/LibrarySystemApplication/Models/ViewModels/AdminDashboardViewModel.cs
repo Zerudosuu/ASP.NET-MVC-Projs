@@ -2,7 +2,7 @@ using LibrarySystemApplication.Models.Account;
 
 namespace LibrarySystemApplication.Models.ViewModels;
 
-public class LibrarianDashBoardViewModel
+public class AdminDashboardViewModel
 {
     public int UserCount { get; set; }
     public int BookCount { get; set; }
