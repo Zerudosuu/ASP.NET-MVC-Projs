@@ -1,4 +1,6 @@
+using LibrarySystemApplication.Data.Services;
 using LibrarySystemApplication.Data.Services.Interface;
+using LibrarySystemApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,13 +10,22 @@ namespace LibrarySystemApplication.Controllers;
 public class LibrarianController : Controller
 {
     private readonly ILibraryServices _libraryServices;
+
+    private readonly ILibrarianService _librarianService;
     private readonly IBookService _bookService;
 
-    public LibrarianController(ILibraryServices libraryServices, IBookService bookService)
+    public LibrarianController(
+        ILibraryServices libraryServices,
+        ILibrarianService librarianService,
+        IBookService bookService
+    )
     {
         _libraryServices = libraryServices;
+        _librarianService = librarianService;
         _bookService = bookService;
     }
+
+    #region LibraryServices
 
     [HttpPost]
     public async Task<IActionResult> ApproveBorrow(string borrowId)
@@ -42,10 +53,27 @@ public class LibrarianController : Controller
         var books = await _bookService.GetAllAsync();
         return View(books);
     }
+    #endregion
+
+
+    #region LibrarianServices
 
     // GET
-    public IActionResult Dashboard()
+    public async Task<IActionResult> Dashboard()
     {
-        return View();
+        var DashboardModel = new LibrarianDashboardViewModel
+        {
+            TotalBooks = await _librarianService.GetTotalBooksAsync(),
+            BorrowedBooks = await _librarianService.GetTotalBorrowedBooksAsync(),
+            OverdueBooks = await _librarianService.GetTotalOverdueBooksAsync(),
+            RecentBorrowedBooks = await _librarianService.GetRecentBorrowedBooksAsync(),
+
+            AvailableBooks = await _bookService.GetAllAsync(),
+            Members = await _librarianService.GetAllMembersAsync(),
+        };
+
+        return View(DashboardModel);
     }
+
+    #endregion
 }

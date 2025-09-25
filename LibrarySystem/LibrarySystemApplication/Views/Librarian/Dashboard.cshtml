@@ -1,18 +1,92 @@
+@model LibrarySystemApplication.Models.ViewModels.LibrarianDashboardViewModel
+@using LibrarySystemApplication.Models.Account
+@using Microsoft.AspNetCore.Identity
 
-@{
+<div class="container mt-4">
+    <h2 class="fw-bold mb-4">📊 Librarian Dashboard</h2>
 
-ViewData["Title"] = "Admin/Librarian-Dashboard";
-}
+    <div class="row g-3">
+        <!-- Total Books -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-book-half fs-1 text-success"></i>
+                    <h5 class="card-title mt-2">Books</h5>
+                    <h3 class="fw-bold">@Model.TotalBooks</h3>
+                </div>
+            </div>
+        </div>
 
+        <!-- Borrowed Books -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-journal-arrow-down fs-1 text-warning"></i>
+                    <h5 class="card-title mt-2">Borrowed</h5>
+                    <h3 class="fw-bold">@Model.BorrowedBooks</h3>
+                </div>
+            </div>
+        </div>
 
+        <!-- Overdue Books -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-exclamation-triangle fs-1 text-danger"></i>
+                    <h5 class="card-title mt-2">Overdue</h5>
+                    <h3 class="fw-bold">@Model.OverdueBooks</h3>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    
+    <!-- Recent Borrowed Books -->
+    <div class="container mt-5">
+        <h3 class="fw-bold mb-3">📚 Recent Borrowed Books</h3>
+        <div class="table-responsive shadow-sm rounded-3">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Borrower</th>
+                        <th>Borrow Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var borrow in Model.RecentBorrowedBooks)
+                    {
+                        <tr>
+                            <td>@borrow.Book.Title</td>
+                            <td>@borrow.Member.Name</td>
+                            <td>@borrow.BorrowDate.ToString("MMM dd, yyyy")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Member List -->
+    <div class="container mt-5">
+        <h3 class="fw-bold mb-3">👥 Members</h3>
+        <div class="table-responsive shadow-sm rounded-3">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var member in Model.Members)
+                    {
+                        <tr>
+                            <td>@member.Name</td>
+                            <td>@member.Email</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-</body>
-</html>

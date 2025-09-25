@@ -47,7 +47,7 @@ namespace LibrarySystemApplication.Controllers
         }
 
         [Route("/MainLibrary")]
-        [Authorize(Roles = "Member,Admin,Librarian")]
+        [Authorize(Roles = "Member")]
         public IActionResult MainLibrary()
         {
             return View();
