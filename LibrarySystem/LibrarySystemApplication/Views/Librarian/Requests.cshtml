@@ -4,47 +4,80 @@
     ViewData["Title"] = "Pending Borrow Requests";
 }
 
-<div class=" container mt-4">
-    <h1 class="h3">Pending Borrow Requests</h1>
-    <p class="text-muted">Manage and approve pending borrow requests from members.</p>
+<div class="container mt-4">
+    <h1 class="h3 mb-3">📚 Pending Borrow Requests</h1>
+    <p class="text-muted">Review and manage borrow requests submitted by library members.</p>
 
-
-    <table class="table table-bordered" id="pendingTable">
-        <thead>
-            <tr>
-                <th>Book</th>
-                <th>Member</th>
-                <th>Requested On</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var borrow in Model)
-            {
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover align-middle text-center" id="pendingTable">
+            <thead class="table-dark">
                 <tr>
-                    <td>@borrow.Book.Title</td>
-                    <td>@borrow.Member.UserName</td>
-                    <td>@borrow.BorrowDate.ToShortDateString()</td>
-                    <td>@borrow.Status</td>
-                    <td>
-                        <form asp-action="ApproveBorrow" method="post" style="display:inline">
-                            <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
-                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
-                        </form>
-                        <form asp-action="RejectBorrow" method="post" style="display:inline">
-                            <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
-                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                        </form>
-                    </td>
+                    <th>📖 Book</th>
+                    <th>👤 Member</th>
+                    <th>📅 Requested On</th>
+                    <th>⏳ Request Age</th>
+                    <th>⚡ Status</th>
+                    <th>✅ Action</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No pending borrow requests at the moment.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+
+                    @foreach (var borrow in Model)
+                    {
+                        var requestAge = (DateTime.Now - borrow.BorrowDate).Days;
+                        <tr>
+                            <td>@borrow.Book.Title</td>
+                            <td>@borrow.Member.UserName</td>
+                            <td>@borrow.BorrowDate.ToShortDateString()</td>
+                            <td>
+                                @if (requestAge == 0)
+                                {
+                                    <span class="badge bg-info">Today</span>
+                                }
+                                else if (requestAge == 1)
+                                {
+                                    <span class="badge bg-warning">1 day ago</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">@requestAge days ago</span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge bg-warning">@borrow.Status</span>
+                            </td>
+                            <td>
+                                <form asp-action="ApproveBorrow" method="post" style="display:inline">
+                                    <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        ✅ Approve
+                                    </button>
+                                </form>
+                                <form asp-action="RejectBorrow" method="post" style="display:inline">
+                                    <input type="hidden" name="borrowId" value="@borrow.BorrowId" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        ❌ Reject
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
-
-
-
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
 <script>
@@ -52,14 +85,22 @@
         .withUrl("/libraryHub")
         .build();
 
-    connection.on("ReceiveBorrowRequest", (bookId, memberName) => {
+    // When a new borrow request comes in
+    connection.on("ReceiveBorrowRequest", (bookTitle, memberName) => {
         const table = document.getElementById("pendingTable").getElementsByTagName("tbody")[0];
         const row = table.insertRow();
-        row.innerHTML = `<td>${bookId}</td>
-                             <td>${memberName}</td>
-                             <td>${new Date().toLocaleDateString()}</td>
-                            <td><span class="badge bg-warning">Pending</span></td>`;
+        row.innerHTML = `
+            <td>${bookTitle}</td>
+            <td>${memberName}</td>
+            <td>${new Date().toLocaleDateString()}</td>
+            <td><span class="badge bg-info">Today</span></td>
+            <td><span class="badge bg-warning">Pending</span></td>
+            <td>
+                <button class="btn btn-success btn-sm">✅ Approve</button>
+                <button class="btn btn-danger btn-sm">❌ Reject</button>
+            </td>`;
     });
+
     connection.start().catch(function (err) {
         return console.error(err.toString());
     });

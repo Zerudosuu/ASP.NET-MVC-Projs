@@ -50,6 +50,8 @@
                         <th>Book Title</th>
                         <th>Borrower</th>
                         <th>Borrow Date</th>
+                        <th>Status</th>
+                        <th>Due Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,6 +61,9 @@
                             <td>@borrow.Book.Title</td>
                             <td>@borrow.Member.Name</td>
                             <td>@borrow.BorrowDate.ToString("MMM dd, yyyy")</td>
+                            <td>@borrow.Status</td>
+                            <td>@(borrow.DueDate.HasValue? borrow.DueDate.Value.ToString("MMM dd, yyyy") : "N/A")</td>
+
                         </tr>
                     }
                 </tbody>

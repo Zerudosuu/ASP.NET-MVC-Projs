@@ -19,11 +19,12 @@ namespace LibrarySystemApplication.Models
         public DateTime? ReturnDate { get; set; }
 
         public DateTime? DueDate { get; set; } = DateTime.Now.AddDays(14);
-        public bool? IsOverDue => DateTime.Now > DueDate && ReturnDate == null; 
+        public bool? IsOverDue => DateTime.Now > DueDate && ReturnDate == null;
 
         public BorrowStatus Status { get; set; } = BorrowStatus.InShelf;
     }
 }
+
 public enum BorrowStatus
 {
     InShelf,
@@ -31,5 +32,5 @@ public enum BorrowStatus
     Approved,
     Rejected,
     Returned,
-    Overdue
+    Overdue,
 }

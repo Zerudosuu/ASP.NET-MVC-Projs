@@ -3,6 +3,7 @@ using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystemApplication.Controllers;
 
@@ -48,11 +49,49 @@ public class LibrarianController : Controller
         return View(borrowquee);
     }
 
-    public async Task<IActionResult> ManageBooks()
+    public async Task<IActionResult> ManageBooks(
+        string search = "",
+        int page = 1,
+        int pageSize = 10
+    )
     {
-        var books = await _bookService.GetAllAsync();
-        return View(books);
+        var query = _libraryServices.GetAvailableBooksAsync().Result; // IQueryable<Book>
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var lowered = search.ToLower();
+            query = query.Where(b =>
+                b.Title.ToLower().Contains(lowered) || b.Author.ToLower().Contains(lowered)
+            );
+        }
+
+        var totalBooks = await query.CountAsync();
+
+        // Ensure page doesn't go out of range
+        var totalPages = (int)Math.Ceiling((double)totalBooks / pageSize);
+        if (page < 1)
+            page = 1;
+        if (page > totalPages)
+            page = totalPages;
+
+        var pagedBooks = await query
+            .OrderBy(b => b.Title) // always have stable order
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        ViewBag.TotalPages = totalPages;
+        ViewBag.CurrentPage = page;
+        ViewBag.Search = search;
+
+        if (Request.Headers.XRequestedWith == "XMLHttpRequest")
+        {
+            return PartialView("_BookTablePartial", pagedBooks);
+        }
+
+        return View(pagedBooks);
     }
+
     #endregion
 
 

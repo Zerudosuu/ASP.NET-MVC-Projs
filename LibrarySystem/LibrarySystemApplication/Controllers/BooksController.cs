@@ -58,7 +58,7 @@ public class BooksController : Controller
         if (ModelState.IsValid)
         {
             await _bookService.AddAsync(book);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("ManageBooks", "Librarian");
         }
         return View(book);
     }

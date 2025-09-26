@@ -167,5 +167,10 @@ namespace LibrarySystemApplication.Data.Services
             _context.Borrows.Remove(book);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IQueryable<Book>> GetAvailableBooksAsync()
+        {
+            return _context.Books.AsQueryable();
+        }
     }
 }

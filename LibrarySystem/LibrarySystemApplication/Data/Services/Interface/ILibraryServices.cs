@@ -18,5 +18,7 @@ namespace LibrarySystemApplication.Data.Services.Interface
         Task<Book> GetSpecificBookAsync(string bookId);
 
         Task DeleteRequestAsync(string borrowId);
+
+        Task<IQueryable<Book>> GetAvailableBooksAsync();
     }
 }
