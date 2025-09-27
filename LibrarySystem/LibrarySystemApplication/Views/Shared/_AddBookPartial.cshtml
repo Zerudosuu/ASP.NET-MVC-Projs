@@ -1,0 +1,78 @@
+@model LibrarySystemApplication.Models.ViewModels.BookCreateViewModel
+
+<!-- Add Book Modal -->
+<div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content shadow-lg">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="addBookModalLabel">
+                    <i class="bi bi-bookmark-plus me-2"></i> Add New Book
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+
+            <form asp-action="Create" asp-controller="Books" method="post">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <!-- Title -->
+                        <div class="col-md-6">
+                            <label asp-for="Title" class="form-label fw-semibold"></label>
+                            <input asp-for="Title" class="form-control" placeholder="Enter book title" required />
+                        </div>
+
+                        <!-- ISBN -->
+                        <div class="col-md-6">
+                            <label asp-for="Isbn" class="form-label fw-semibold"></label>
+                            <input asp-for="Isbn" class="form-control" placeholder="Enter ISBN number" />
+                        </div>
+
+                        <!-- Author -->
+                        <div class="col-md-6">
+                            <label asp-for="Author" class="form-label fw-semibold"></label>
+                            <input asp-for="Author" class="form-control" placeholder="Enter author name" required />
+                        </div>
+
+                        <!-- Publisher -->
+                        <div class="col-md-6">
+                            <label asp-for="Publisher" class="form-label fw-semibold"></label>
+                            <input asp-for="Publisher" class="form-control" placeholder="Enter publisher name"
+                                required />
+                        </div>
+
+                        <!-- Published Year -->
+                        <div class="col-md-6">
+                            <label asp-for="PublishYear" class="form-label fw-semibold"></label>
+                            <input asp-for="PublishYear" type="number" class="form-control" placeholder="e.g. 2022" />
+                        </div>
+
+                        <!-- Category -->
+                        <div class="col-md-6">
+                            <label asp-for="CategoriesInput" class="form-label fw-semibold"></label>
+                            <input asp-for="CategoriesInput" class="form-control" placeholder="e.g. Fiction, Science" />
+                            <small class="text-muted">Separate multiple categories with commas</small>
+                        </div>
+
+                        <!-- Total Copies -->
+                        <div class="col-md-6">
+                            <label asp-for="TotalCopies" class="form-label fw-semibold"></label>
+                            <input asp-for="TotalCopies" type="number" min="1" class="form-control"
+                                placeholder="Enter number of copies" required />
+                        </div>
+
+                        <input asp-for="IsAvailable" type="hidden" value="true" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save me-1"></i> Save Book
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

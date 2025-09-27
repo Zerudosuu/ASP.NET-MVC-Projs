@@ -39,14 +39,14 @@ namespace LibrarySystemApplication.Controllers
                     lockoutOnFailure: false
                 );
 
-                if (result.Succeeded)
+                if (result.Succeeded && _signInManager.IsSignedIn(User))
                 {
                     var user = await _userManager.FindByEmailAsync(model.Email!);
                     var roles = await _userManager.GetRolesAsync(user);
 
-                    if (roles.Contains("Admin"))
+                    if (roles.Contains("Admin") || User.IsInRole("Admin"))
                         return RedirectToAction("Dashboard", "Admin");
-                    else if (roles.Contains("Librarian"))
+                    else if (roles.Contains("Librarian") || User.IsInRole("Librarian"))
                         return RedirectToAction("Dashboard", "Librarian");
                     else
                         return RedirectToAction("MainLibrary", "Home");
@@ -89,7 +89,12 @@ namespace LibrarySystemApplication.Controllers
                 {
                     // Optionally sign them in automatically after registration:
                     // await _signInManager.SignInAsync(member, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+
+
+                    if (memberRole == "Admin")
+                        return RedirectToAction("ManageLibrarians", "Admin");
+                    else
+                        return RedirectToAction("MainLibrary", "Home");
                 }
 
                 // If user creation failed, display all error messages in the view.
@@ -99,7 +104,7 @@ namespace LibrarySystemApplication.Controllers
                 }
             }
 
-            return View(model);
+            return RedirectToAction("Index", "Home");
         }
 
         // Logout method: Signs the user out and then redirects to Home.

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models.Books;
+using LibrarySystemApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
@@ -44,23 +45,37 @@ public class BooksController : Controller
         return PartialView("_BookPartial", book);
     }
 
-    [Authorize(Roles = "Admin")]
-    // GET: Books/Create
-    public IActionResult Create() => View();
-
-    // POST: Books/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(
-        [Bind("BookId,Title,Description,Author,Category,PublishedDate,CoverImageUrl")] Book book
-    )
+    public async Task<IActionResult> Create(BookCreateViewModel model)
     {
         if (ModelState.IsValid)
         {
+            var book = new Book
+            {
+                Title = model.Title,
+                Isbn = model.Isbn,
+                Author = model.Author,
+                PublishYear = model.PublishYear,
+                Publisher = model.Publisher,
+                CoverUrl = model.CoverUrl,
+                Language = model.Language,
+                TotalCopies = model.TotalCopies,
+                IsAvailable = model.IsAvailable,
+                Categories = string.IsNullOrWhiteSpace(model.CategoriesInput)
+                    ? new List<string>()
+                    : model
+                        .CategoriesInput.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(c => c.Trim())
+                        .ToList(),
+            };
+
             await _bookService.AddAsync(book);
             return RedirectToAction("ManageBooks", "Librarian");
         }
-        return View(book);
+
+        TempData["ErrorAddingBook"] = "Failed to add book. Please check the details and try again.";
+        return RedirectToAction("ManageBooks", "Librarian");
     }
 
     // GET: Books/Edit/5

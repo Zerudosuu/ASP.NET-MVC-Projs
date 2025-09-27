@@ -14,36 +14,38 @@
                 <form asp-controller="Account" asp-action="Register" method="post">
                     <input type="hidden" name="memberRole" value="@(ViewBag.UserRole ?? "Member")" />
                     <div class="mb-3">
-                        <label class="form-label">Full Name</label>
+                        <label asp-for="UserName" class="form-label">Full Name</label>
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="John Doe">
+                            <input type="text" asp-for="UserName" class="form-control" placeholder="John Doe">
                             <span class="input-group-text">
                                 <i class="fas fa-user"></i>
                             </span>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Email address</label>
+                        <label asp-for="Email" class="form-label">Email address</label>
                         <div class="input-group">
-                            <input type="email" class="form-control" placeholder="Enter your email">
+                            <input type="email" asp-for="Email" class="form-control" placeholder="Enter your email">
                             <span class="input-group-text">
                                 <i class="fas fa-envelope"></i>
                             </span>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Password</label>
+                        <label asp-for="Password" class="form-label">Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" placeholder="Create a password">
+                            <input type="password" asp-for="Password" class="form-control"
+                                placeholder="Create a password">
                             <span class="input-group-text password-toggle">
                                 <i class="fas fa-eye"></i>
                             </span>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Confirm Password</label>
+                        <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" placeholder="Confirm your password">
+                            <input type="password" asp-for="ConfirmPassword" class="form-control"
+                                placeholder="Confirm your password">
                             <span class="input-group-text password-toggle">
                                 <i class="fas fa-eye"></i>
                             </span>
@@ -51,10 +53,16 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-register text-light"> @(ViewBag.UserRole ==
                                                 "Librarian" ? "Add Librarian" : "Register")</button>
-                    <div class="register-link mt-3">
-                        Already have an account? <a href="#" class="text-decoration-none" data-bs-toggle="modal"
-                            data-bs-target="#loginModal" data-bs-dismiss="modal">Login here</a>
-                    </div>
+
+                    @if (ViewBag.UserRole != "Librarian")
+                    {
+                        <div class="register-link mt-3">
+                            Already have an account?
+                            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal"
+                                data-bs-dismiss="modal">Login here</a>
+                        </div>
+                    }
+
                 </form>
             </div>
         </div>

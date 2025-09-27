@@ -47,10 +47,18 @@ namespace LibrarySystemApplication.Controllers
         }
 
         [Route("/MainLibrary")]
-        [Authorize(Roles = "Member")]
         public IActionResult MainLibrary()
         {
-            return View();
+            if (!_signInManager.IsSignedIn(User))
+                return RedirectToAction("Index", "Home");
+            else if (User.IsInRole("Librarian"))
+                return RedirectToAction("Dashboard", "Librarian");
+            else if (User.IsInRole("Admin"))
+                return RedirectToAction("Dashboard", "Admin");
+            else if (User.IsInRole("Member"))
+                return View();
+            else
+                return RedirectToAction("Index", "Home");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
