@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using LibrarySystemApplication.Data.Services;
 using LibrarySystemApplication.Data.Services.Interface;
+using LibrarySystemApplication.Models.Books;
 using LibrarySystemApplication.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -115,4 +117,67 @@ public class LibrarianController : Controller
     }
 
     #endregion
+
+
+    #region BooksServices
+    // GET: Books/Details/5
+    public async Task<IActionResult> BookDetails(string id)
+    {
+        if (id == null)
+            return NotFound();
+
+        var book = await _bookService.GetByIdAsync(id);
+        if (book == null)
+            return NotFound();
+
+        return PartialView("_BookDetailsPartial", book);
+    }
+
+    // GET: Books/Edit/5
+    public async Task<IActionResult> Edit(string id)
+    {
+        var book = await _bookService.GetByIdAsync(id);
+        if (book == null)
+            return NotFound();
+
+        return PartialView("_EditBookPartial", book);
+    }
+
+    // POST: Books/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(string id, Book book)
+    {
+        if (id != book.BookId)
+            return NotFound();
+
+        if (ModelState.IsValid)
+        {
+            await _bookService.UpdateAsync(book);
+            return RedirectToAction(nameof(Index));
+        }
+        return View(book);
+    }
+
+    // GET: Books/Delete/5
+    public async Task<IActionResult> Delete(string id)
+    {
+        var book = await _bookService.GetByIdAsync(id);
+        if (book == null)
+            return NotFound();
+
+        return PartialView("_DeleteBookPartial", book);
+    }
+
+    // POST: Books/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(string id)
+    {
+        await _bookService.DeleteAsync(id);
+        return RedirectToAction("ManageBooks", "Librarian");
+    }
 }
+
+
+    #endregion

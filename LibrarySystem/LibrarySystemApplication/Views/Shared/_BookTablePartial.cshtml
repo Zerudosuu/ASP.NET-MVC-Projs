@@ -26,15 +26,24 @@
                         <td>@item.Publisher</td>
                         <td>@item.PublishYear</td>
                         <td class="text-center">
-                            <a asp-action="Edit" asp-route-id="@item.BookId" class="btn btn-sm btn-outline-primary me-1">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <a asp-action="Details" asp-route-id="@item.BookId" class="btn btn-sm btn-outline-info me-1">
+                            <a href="#" class="btn btn-sm btn-outline-info me-1 open-modal"
+                                data-url="@Url.Action("BookDetails", "Librarian", new { id = item.BookId })"
+                                data-title="Book Details">
                                 <i class="bi bi-eye"></i>
                             </a>
-                            <a asp-action="Delete" asp-route-id="@item.BookId" class="btn btn-sm btn-outline-danger">
+
+                            <a href="#" class="btn btn-sm btn-outline-primary me-1 open-modal"
+                                data-url="@Url.Action("Edit", "Librarian", new { id = item.BookId })"
+                                data-title="Edit Book">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                            <a href="#" class="btn btn-sm btn-outline-danger open-modal"
+                                data-url="@Url.Action("Delete", "Librarian", new { id = item.BookId })"
+                                data-title="Delete Book">
                                 <i class="bi bi-trash"></i>
                             </a>
+
                         </td>
                     </tr>
                 }
@@ -42,6 +51,23 @@
         </table>
     </div>
 </div>
+
+<!-- Reusable Modal -->
+<div class="modal fade" id="bookModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Content will be injected here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <!-- Pagination -->
 <nav class="mt-3">
@@ -66,3 +92,50 @@
         </li>
     </ul>
 </nav>
+
+<script>
+    /* $(document).on("click", ".open-modal", function (e) {
+         e.preventDefault();
+ 
+         var url = $(this).data("url");
+         var title = $(this).data("title");
+ 
+ 
+         console.log(url);
+         console.log(title);
+ 
+         // Set modal title
+         $("#bookModalLabel").text(title);
+ 
+         // Load the partial into the modal body
+         $("#bookModal .modal-body").load(url, function () {
+             // Show the modal after content loads
+             $("#bookModal").modal("show");
+         });
+     }); */
+
+
+
+
+    const modal = new bootstrap.Modal(document.getElementById('bookModal'));
+    document.querySelectorAll('.open-modal').forEach(button => {
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            var url = this.dataset.url;
+            var title = this.dataset.title;
+
+            console.log(url);
+            console.log(title);
+
+            // Set modal title
+            $("#bookModalLabel").text(title);
+
+            // Load the partial into the modal body
+            $("#bookModal .modal-body").load(url, function () {
+                // Show the modal after content loads
+                $("#bookModal").modal("show");
+            });
+        });
+    });
+</script>
