@@ -38,8 +38,8 @@ public class BooksController : Controller
 
         if (memberId != null)
         {
-            var alreadyBorrowed = await _bookService.CheckIfBorrowedAsync(memberId, id);
-            ViewBag.AlreadyBorrowed = alreadyBorrowed;
+            var status = await _bookService.CheckIfBorrowedAsync(memberId, id);
+            ViewBag.BorrowStatus = status?.ToString() ?? "InShelf";
         }
 
         return PartialView("_BookPartial", book);

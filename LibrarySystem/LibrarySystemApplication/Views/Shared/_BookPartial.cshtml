@@ -6,20 +6,34 @@
     <p><strong>Publisher:</strong> @Model.Publisher</p>
     <p><strong>Year:</strong> @Model.PublishYear</p>
 
-   
-    @if (ViewBag.AlreadyBorrowed == true)
+
+    @if (ViewBag.BorrowStatus != null)
     {
-        <button class="btn btn-secondary" disabled>You already Borrowed this</button>
+        <p>
+            <strong>Status:</strong>
+            <span class="badge 
+                    @(ViewBag.BorrowStatus == "Overdue" ? "bg-danger" :
+                                                                ViewBag.BorrowStatus == "Pending" ? "bg-warning text-dark" : 
+                                                                ViewBag.BorrowStatus == "Approved" ? "bg-success" : "bg-secondary")">
+                @ViewBag.BorrowStatus
+            </span>
+        </p>
+
+        @if (ViewBag.BorrowStatus == "InShelf")
+        {
+            <form asp-controller="Member" asp-action="Borrow" method="post">
+                <input type="hidden" name="bookId" value="@Model.BookId" />
+                <button class="btn btn-success" type="submit">
+                    Borrow this Book
+                </button>
+            </form>
+        }
+
     }
     else
     {
-    <form asp-controller="Member" asp-action="Borrow" method="post">
-        <input type="hidden" name="bookId" value="@Model.BookId"/>
-        <button class="btn btn-success" type="submit">
-            Borrow this Book
-        </button>
-    </form>
+        <p><em>Login to see borrowing options.</em></p>
     }
-    
-  
+
+
 </div>

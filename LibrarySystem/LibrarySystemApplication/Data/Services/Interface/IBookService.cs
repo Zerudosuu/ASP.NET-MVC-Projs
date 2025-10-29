@@ -9,6 +9,6 @@ namespace LibrarySystemApplication.Data.Services.Interface
         Task AddAsync(Book book);
         Task UpdateAsync(Book book);
         Task DeleteAsync(string id);
-        Task<bool> CheckIfBorrowedAsync(string memberId, string id);
+        Task<BorrowStatus?> CheckIfBorrowedAsync(string memberId, string bookId);
     }
 }

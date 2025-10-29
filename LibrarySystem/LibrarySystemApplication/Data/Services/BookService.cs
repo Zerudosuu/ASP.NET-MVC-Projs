@@ -1,23 +1,23 @@
 ﻿using LibrarySystemApplication.Data.Services.Interface;
 using LibrarySystemApplication.Models.Books;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystemApplication.Data.Services
 {
-    // This service implements the IBookService interface. 
-    // Following the Separation of Concerns principle, 
-    // we define an interface for the contract (methods) and 
+    // This service implements the IBookService interface.
+    // Following the Separation of Concerns principle,
+    // we define an interface for the contract (methods) and
     // then provide the concrete implementation here.
     public class BookService : IBookService
     {
         private readonly LibrarySystemAppContext _context;
-        // _context represents the database context. 
-        // It acts like a "bridge" between your code and the database. 
-        // Through it, you can query, insert, update, or delete data. 
+
+        // _context represents the database context.
+        // It acts like a "bridge" between your code and the database.
+        // Through it, you can query, insert, update, or delete data.
 
         // Constructor Dependency Injection:
-        // ASP.NET Core will inject the LibrarySystemAppContext 
+        // ASP.NET Core will inject the LibrarySystemAppContext
         // (configured in Program.cs / Startup.cs) when creating this service.
         public BookService(LibrarySystemAppContext context)
         {
@@ -51,12 +51,21 @@ namespace LibrarySystemApplication.Data.Services
             }
         }
 
-        public async Task<bool> CheckIfBorrowedAsync(string memberId, string bookId)
+        public async Task<BorrowStatus?> CheckIfBorrowedAsync(string memberId, string bookId)
         {
-            return await _context.Borrows.AnyAsync(b =>
-                b.MemberId == memberId &&
-                b.BookId == bookId &&
-                (b.Status == BorrowStatus.Approved || b.Status == BorrowStatus.Pending));
+            var borrow = await _context
+                .Borrows.Where(b => b.MemberId == memberId && b.BookId == bookId)
+                .OrderByDescending(b => b.BorrowDate)
+                .FirstOrDefaultAsync();
+
+            if (borrow == null)
+                return null; // Never borrowed
+
+            // Determine status (you can adjust the logic)
+            if (borrow.IsOverDue == true)
+                return BorrowStatus.Overdue;
+
+            return borrow.Status;
         }
 
         // GetAllAsync retrieves all books from the database.
@@ -77,7 +86,7 @@ namespace LibrarySystemApplication.Data.Services
         public async Task UpdateAsync(Book book)
         {
             _context.Books.Update(book);
-            // Marks the entity as "Modified". EF Core will generate 
+            // Marks the entity as "Modified". EF Core will generate
             // the necessary SQL UPDATE query during SaveChanges.
 
             await _context.SaveChangesAsync();
