@@ -37,6 +37,8 @@ builder.Services.AddIdentity<Member, IdentityRole>(options =>
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<ILibrarianRepository, LibrarianRepository> ();
+
 
 
 var app = builder.Build();
@@ -45,8 +47,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    string[] roles = Enum.GetNames(typeof(MemberRole));
+    var roles = new[] {"Librarian", "Member" };
 
     foreach (var role in roles)
     {
@@ -57,7 +58,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-//seedng Librarian user
+// Seeding Librarian user
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();
@@ -67,13 +68,12 @@ using (var scope = app.Services.CreateScope())
     string librarianEmail = "librarian@librarian.com";
     string librarianPassword = "Test1234";
 
-    var librarianUser = await userManager.FindByNameAsync(librarianName);
-    if (librarianUser == null)
+    var existingUser = await userManager.FindByNameAsync(librarianName);
+    if (existingUser == null)
     {
-        // 3️⃣ Create librarian with full mock details
         var newLibrarian = new Member
         {
-            UserName = "main.librarian",
+            UserName = librarianName,
             Email = librarianEmail,
             FirstName = "Alexandria",
             LastName = "Rivera",
@@ -87,20 +87,18 @@ using (var scope = app.Services.CreateScope())
             CreatedAt = DateTime.UtcNow,
         };
 
-        var result = await userManager.CreateAsync(librarianUser, librarianPassword);
+        var result = await userManager.CreateAsync(newLibrarian, librarianPassword);
 
         if (result.Succeeded)
         {
-            await userManager.AddToRoleAsync(librarianUser, librarianRole);
+            await userManager.AddToRoleAsync(newLibrarian, librarianRole);
             Console.WriteLine("✅ Librarian user created successfully with mock profile data!");
         }
         else
         {
             Console.WriteLine("⚠️ Librarian creation failed:");
             foreach (var error in result.Errors)
-            {
                 Console.WriteLine($" - {error.Description}");
-            }
         }
     }
     else
@@ -108,6 +106,7 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine("ℹ️ Librarian user already exists.");
     }
 }
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
