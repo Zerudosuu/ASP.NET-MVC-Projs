@@ -4,7 +4,6 @@ using LibrarySystemServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,11 +11,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibrarySystemServer.Migrations
 {
     [DbContext(typeof(LibrarySystemContext))]
-    [Migration("20251104133741_initial-migration")]
-    partial class initialmigration
+    partial class LibrarySystemContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +22,7 @@ namespace LibrarySystemServer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("LibrarySystemServer.Model.Book", b =>
+            modelBuilder.Entity("LibrarySystemServer.API.Model.Book", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,7 +72,7 @@ namespace LibrarySystemServer.Migrations
                     b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("LibrarySystemServer.Model.BorrowRecord", b =>
+            modelBuilder.Entity("LibrarySystemServer.API.Model.BorrowRecord", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -102,7 +99,7 @@ namespace LibrarySystemServer.Migrations
                     b.ToTable("BorrowRecords");
                 });
 
-            modelBuilder.Entity("LibrarySystemServer.Model.Member", b =>
+            modelBuilder.Entity("LibrarySystemServer.API.Model.Member", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -331,9 +328,9 @@ namespace LibrarySystemServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("LibrarySystemServer.Model.BorrowRecord", b =>
+            modelBuilder.Entity("LibrarySystemServer.API.Model.BorrowRecord", b =>
                 {
-                    b.HasOne("LibrarySystemServer.Model.Member", "Member")
+                    b.HasOne("LibrarySystemServer.API.Model.Member", "Member")
                         .WithMany("BorrowRecords")
                         .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -353,7 +350,7 @@ namespace LibrarySystemServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("LibrarySystemServer.Model.Member", null)
+                    b.HasOne("LibrarySystemServer.API.Model.Member", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -362,7 +359,7 @@ namespace LibrarySystemServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("LibrarySystemServer.Model.Member", null)
+                    b.HasOne("LibrarySystemServer.API.Model.Member", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -377,7 +374,7 @@ namespace LibrarySystemServer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LibrarySystemServer.Model.Member", null)
+                    b.HasOne("LibrarySystemServer.API.Model.Member", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -386,14 +383,14 @@ namespace LibrarySystemServer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("LibrarySystemServer.Model.Member", null)
+                    b.HasOne("LibrarySystemServer.API.Model.Member", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LibrarySystemServer.Model.Member", b =>
+            modelBuilder.Entity("LibrarySystemServer.API.Model.Member", b =>
                 {
                     b.Navigation("BorrowRecords");
                 });

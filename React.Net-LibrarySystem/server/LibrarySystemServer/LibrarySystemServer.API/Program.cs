@@ -1,5 +1,9 @@
 using LibrarySystemServer.Data;
 using LibrarySystemServer.Model;
+using LibrarySystemServer.Repositories.Implementations;
+using LibrarySystemServer.Repositories.Interfaces;
+using LibrarySystemServer.Services.Implementations;
+using LibrarySystemServer.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +33,11 @@ builder.Services.AddIdentity<Member, IdentityRole>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequiredLength = 8;
 }).AddEntityFrameworkStores<LibrarySystemContext>() // <— connects Identity to EF Core
-.AddDefaultTokenProviders(); ;
+.AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IBookService, BookService>();
+
 
 var app = builder.Build();
 

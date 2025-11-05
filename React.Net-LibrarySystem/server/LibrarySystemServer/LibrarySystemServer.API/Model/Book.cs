@@ -13,5 +13,7 @@ namespace LibrarySystemServer.Model
         public double? Rating { get; set; }
         public string ThumbnailUrl { get; set; }
         public string PreviewLink { get; set; }
+        public bool isAvailable { get; set; }
+        
     }
 }
