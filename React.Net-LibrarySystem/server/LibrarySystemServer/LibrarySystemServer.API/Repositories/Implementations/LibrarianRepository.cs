@@ -23,6 +23,7 @@ public class LibrarianRepository(LibrarySystemContext context) : ILibrarianRepos
     public async Task AddBookAsync(Book book)
     {
         await _context.Books.AddAsync(book);
+        await _context.SaveChangesAsync();
     }
 
     public Task UpdateBook(Book book)
@@ -37,6 +38,11 @@ public class LibrarianRepository(LibrarySystemContext context) : ILibrarianRepos
         if(tempBook != null)    
             _context.Books.Remove(tempBook);
         
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();    
     }
 
     public async Task<IEnumerable<BorrowRecord>> GetAllBorrowRecordsAsync()
@@ -63,4 +69,6 @@ public class LibrarianRepository(LibrarySystemContext context) : ILibrarianRepos
         await _context.SaveChangesAsync();
         return record;
     }
+    
+    
 }

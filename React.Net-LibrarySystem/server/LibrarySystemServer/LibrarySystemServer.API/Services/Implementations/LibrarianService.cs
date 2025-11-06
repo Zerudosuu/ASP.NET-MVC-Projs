@@ -8,34 +8,46 @@ public class LibrarianService(ILibrarianRepository librarianRepository) : ILibra
 {
     private readonly ILibrarianRepository _librarianRepository = librarianRepository;
     
-    public Task<List<Book>> GetAllBooksAsync()
+    
+    //TODO: Need to continue LibrarianService
+    public async Task<List<Book>> GetAllBooksAsync()
     {
-        throw new NotImplementedException();
+        return await _librarianRepository.GetAllBooksAsync();
     }
 
-    public Task<Book?> GetBookByIdAsync(Guid id)
+    public async Task<Book?> GetBookByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await _librarianRepository.GetBookByIdAsync(id);
     }
 
-    public Task AddBookAsync(Book book)
+    public async Task AddBookAsync(Book book)
     {
-        throw new NotImplementedException();
+        if(book == null)
+            throw new ArgumentNullException(nameof(book));
+       
+        await _librarianRepository.AddBookAsync(book);
+        await _librarianRepository.SaveChangesAsync();
+        
     }
 
-    public Task UpdateBookAsync(Book book)
+    public async Task UpdateBookAsync(Book book)
     {
-        throw new NotImplementedException();
+        if (book != null)
+        {
+            await _librarianRepository.UpdateBook(book);
+            await _librarianRepository.SaveChangesAsync();
+        }
     }
 
-    public Task DeleteBookAsync(Guid id)
+    public async Task DeleteBookAsync(Guid id)
     {
-        throw new NotImplementedException();
+        await _librarianRepository.DeleteBookAsync(id);
+        await _librarianRepository.SaveChangesAsync();
     }
 
-    public Task<IEnumerable<BorrowRecord>> GetAllBorrowRecordsAsync()
+    public async Task<IEnumerable<BorrowRecord>> GetAllBorrowRecordsAsync()
     {
-        throw new NotImplementedException();
+      return await _librarianRepository.GetAllBorrowRecordsAsync();
     }
 
     public Task<BorrowRecord> ApproveBorrowAsync(Guid borrowRecordId)

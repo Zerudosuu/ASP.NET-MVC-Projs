@@ -9,6 +9,8 @@ public interface ILibrarianRepository
     Task AddBookAsync(Book book);
     Task UpdateBook(Book book);
     Task DeleteBookAsync(Guid id);
+    
+    Task SaveChangesAsync();
     // Borrow management
     Task<IEnumerable<BorrowRecord>> GetAllBorrowRecordsAsync();
     Task<BorrowRecord> ApproveBorrowAsync(Guid borrowRecordId);

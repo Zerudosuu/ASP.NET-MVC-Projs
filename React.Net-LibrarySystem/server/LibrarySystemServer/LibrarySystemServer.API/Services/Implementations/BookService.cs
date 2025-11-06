@@ -21,8 +21,8 @@ namespace LibrarySystemServer.Services.Implementations
 
         public async Task AddBookAsync(Book book)
         {
-            if(string.IsNullOrEmpty(book.Title))    
-                throw new ArgumentException("Book title cannot be null or empty");
+            if(book == null)    
+                throw new ArgumentException("Book  cannot be null or empty");
             
             await _bookRepository.AddAsync(book);
             await _bookRepository.SaveChangesAsync();
