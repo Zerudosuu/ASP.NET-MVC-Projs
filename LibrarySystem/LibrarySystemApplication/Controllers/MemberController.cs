@@ -70,7 +70,7 @@ public class MemberController : Controller
         try
         {
             //create barrow with pending status
-            await _libraryServices.BorrowBookAsync(memberId, bookId, BorrowStatus.Pending);
+            await _libraryServices.BorrowBookAsync (memberId, bookId, BorrowStatus.Pending);
 
             var book = await _libraryServices.GetSpecificBookAsync(bookId);
             var member = User.Identity.Name;

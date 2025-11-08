@@ -1,6 +1,4 @@
-namespace LibrarySystemServer.Controllers;
-
-public class LibrarianController
+namespace LibrarySystemServer.Controllers
 {
-    
+    public class LibrarianController { }
 }

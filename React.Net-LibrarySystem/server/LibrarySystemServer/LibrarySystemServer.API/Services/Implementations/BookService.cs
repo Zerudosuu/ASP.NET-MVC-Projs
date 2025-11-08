@@ -11,7 +11,7 @@ namespace LibrarySystemServer.Services.Implementations
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
             var books = await _bookRepository.GetAllAsync();
-            return books.Where(b => b.isAvailable); 
+            return books.Where(b => b.IsAvailable); 
         }
 
         public async Task<Book?> GetBookByIdAsync(Guid id)

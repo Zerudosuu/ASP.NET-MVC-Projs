@@ -37,7 +37,11 @@ builder.Services.AddIdentity<Member, IdentityRole>(options =>
 
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookService, BookService>();
+
 builder.Services.AddScoped<ILibrarianRepository, LibrarianRepository> ();
+builder.Services.AddScoped<ILibrarianService, LibrarianService>();
+
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 
 
 

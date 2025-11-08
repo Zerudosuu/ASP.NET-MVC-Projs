@@ -16,8 +16,10 @@ namespace LibrarySystemServer.Model
         public DateTime? DueDate { get; set; }
         public DateTime? ReturnDate { get; set; }
 
+        public bool? IsOverDue => DateTime.Now > DueDate && ReturnDate == null;
+
         // Status for librarian approval & tracking
-        public BorrowStatus Status { get; set; } = BorrowStatus.Pending;
+        public BorrowStatus Status { get; set; } = BorrowStatus.InShelf;
 
         // Optional: track which librarian handled it
         public string? ApprovedById { get; set; }
@@ -26,6 +28,7 @@ namespace LibrarySystemServer.Model
 
     public enum BorrowStatus
     {
+        InShelf,
         Pending,
         Approved,
         Rejected,
