@@ -42,6 +42,7 @@ builder.Services.AddScoped<ILibrarianRepository, LibrarianRepository> ();
 builder.Services.AddScoped<ILibrarianService, LibrarianService>();
 
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IMemberService, MemberService>();
 
 
 
