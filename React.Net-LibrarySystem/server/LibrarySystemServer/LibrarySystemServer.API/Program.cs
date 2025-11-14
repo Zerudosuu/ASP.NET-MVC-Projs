@@ -67,7 +67,7 @@ using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();
 
-    string librarianRole = MemberRole.Librarian.ToString();
+    string librarianRole = nameof(MemberRole.Librarian);
     string librarianName = "MainLibrarian";
     string librarianEmail = "librarian@librarian.com";
     string librarianPassword = "Test1234";
@@ -83,7 +83,7 @@ using (var scope = app.Services.CreateScope())
             LastName = "Rivera",
             Gender = Gender.Female,
             DateOfBirth = new DateTime(1992, 3, 15),
-            Address = "123 Library Street, Booktown, Manila, Philippines",
+            Address = "123 Library Street, Book town, Manila, Philippines",
             ProfilePictureUrl = "https://cdn-icons-png.flaticon.com/512/194/194938.png",
             Role = MemberRole.Librarian,
             EmailConfirmed = true,

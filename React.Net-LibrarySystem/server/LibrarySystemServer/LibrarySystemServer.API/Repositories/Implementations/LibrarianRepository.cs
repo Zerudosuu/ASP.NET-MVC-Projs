@@ -55,7 +55,7 @@ public class LibrarianRepository(LibrarySystemContext context) : ILibrarianRepos
         var record = await _context.BorrowRecords.FindAsync(borrowRecordId);
         if (record == null) return null;
 
-        record.Status = BorrowStatus.Approved;
+        record.Status = BorrowStatus.Borrowed;
         await _context.SaveChangesAsync();
         return record;
     }
@@ -65,7 +65,7 @@ public class LibrarianRepository(LibrarySystemContext context) : ILibrarianRepos
         var record = await _context.BorrowRecords.FindAsync(borrowRecordId);
         if (record == null) return null;
 
-        record.Status = BorrowStatus.Approved;
+        record.Status = BorrowStatus.Borrowed;
         await _context.SaveChangesAsync();
         return record;
     }

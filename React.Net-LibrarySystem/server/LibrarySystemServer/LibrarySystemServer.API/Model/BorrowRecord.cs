@@ -5,7 +5,7 @@ namespace LibrarySystemServer.Model
         public Guid Id { get; set; }
 
         // Foreign key to Book
-        public int BookId { get; set; }
+        public Guid BookId { get; set; }
         public Book Book { get; set; } = null!;
 
         // Foreign key to Member (who borrowed the book)
@@ -30,7 +30,7 @@ namespace LibrarySystemServer.Model
     {
         InShelf,
         Pending,
-        Approved,
+        Borrowed,
         Rejected,
         Returned,
         Overdue

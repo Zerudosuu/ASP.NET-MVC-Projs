@@ -19,6 +19,11 @@ public class MemberRepository(LibrarySystemContext context) : IMemberRepository
         return await _context.Books.FindAsync(id);
     }
 
+    public async Task<bool> IsBookAlreadyBorrowedAsync(Guid bookId)
+    {
+        return await _context.BorrowRecords.AnyAsync(b => b.BookId == bookId && b.ReturnDate == null && b.Status == BorrowStatus.Borrowed);
+    }
+
     public async Task<IEnumerable<BorrowRecord>> GetBorrowRecordsByMemberAsync(string memberId, bool onlyActive = true)
     {
         var query = _context.BorrowRecords

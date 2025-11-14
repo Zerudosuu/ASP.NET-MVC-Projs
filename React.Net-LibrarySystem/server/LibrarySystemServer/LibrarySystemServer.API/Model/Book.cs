@@ -13,9 +13,8 @@ namespace LibrarySystemServer.Model
         public double? Rating { get; set; }
         public string ThumbnailUrl { get; set; }
         public string PreviewLink { get; set; }
-        public bool IsAvailable { get; set; } = true;
         public int Quantity  { get; set; }
-        
+        public bool IsAvailable => Quantity > 0;  
         public int TotalCopies {get; set;} 
         
     }
