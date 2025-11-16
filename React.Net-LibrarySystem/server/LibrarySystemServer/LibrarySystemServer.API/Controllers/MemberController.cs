@@ -6,8 +6,8 @@ namespace LibrarySystemServer.Controllers
     [Authorize(Roles = "Member")]
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class MemberController : ControllerBase
     {
-        //TODO: Setup member or user controller
+      
     }
 }
