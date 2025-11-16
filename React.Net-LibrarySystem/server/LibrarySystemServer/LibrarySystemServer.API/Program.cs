@@ -23,7 +23,7 @@ builder.Services.AddOpenApi();
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
 
-builder.Services.AddDbContext<LibrarySystemContext>(option =>
+builder.Services.AddDbContextPool<LibrarySystemContext>(option =>
     option.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException(
@@ -76,28 +76,46 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<JwtTokenService>();
 
 
-
-
 var app = builder.Build();
 
 //seed role
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();
+    
+    
     var roles = new[] {"Librarian", "Member" };
+    
+   
+    // Check if roles already exist
+    bool rolesExist = roles.All(role => roleManager.RoleExistsAsync(role).Result);
+    bool librarianExists = userManager.FindByNameAsync("MainLibrarian").Result != null;
 
+    // If everything seeded, SKIP
+    if (rolesExist && librarianExists)
+    {
+        Console.WriteLine("⏭ Seeding skipped — roles and librarian already exist.");
+        return; // exit the block early
+    }
+
+    Console.WriteLine("🔄 Seeding Missing Identity Data...");
+    
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
         {
             await roleManager.CreateAsync(new IdentityRole(role));
+            Console.WriteLine($"   ✔ Role created: {role}");
         }
     }
+
 }
 
 // Seeding Librarian user
 using (var scope = app.Services.CreateScope())
 {
+    
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();
 
     string librarianRole = nameof(MemberRole.Librarian);

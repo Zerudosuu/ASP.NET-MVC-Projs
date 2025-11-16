@@ -4,11 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystemServer.Data
 {
-    public class LibrarySystemContext : IdentityDbContext<Member>
+    public class LibrarySystemContext(DbContextOptions<LibrarySystemContext> options)
+        : IdentityDbContext<Member>(options)
     {
-        public LibrarySystemContext(DbContextOptions<LibrarySystemContext> options)
-            : base(options) { }
-
         public DbSet<Book> Books { get; set; }
         public DbSet<BorrowRecord> BorrowRecords { get; set; }
 

@@ -63,7 +63,7 @@ public class LibrarianRepository(LibrarySystemContext context) : ILibrarianRepos
     public async Task<BorrowRecord> RejectBorrowAsync(Guid borrowRecordId)
     {
         var record = await _context.BorrowRecords.FindAsync(borrowRecordId);
-        if (record == null) return null;
+        if (record == null) return null!;
 
         record.Status = BorrowStatus.Borrowed;
         await _context.SaveChangesAsync();
