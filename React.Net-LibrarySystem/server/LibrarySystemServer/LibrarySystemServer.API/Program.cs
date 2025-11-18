@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using LibrarySystemServer.CompiledModels;
+using LibrarySystemServer.Services.Seeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,14 +25,14 @@ builder.Services.AddOpenApi();
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
 
-builder.Services.AddDbContextPool<LibrarySystemContext>(option =>
-    option.UseSqlServer(
+builder.Services.AddDbContextPool<LibrarySystemContext>(options =>
+    options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException(
-                "Connection string 'DefaultConnection' not found."
-            )
+        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."),
+        sql => sql.Equals(LibrarySystemContextModel.Instance)
     )
 );
+
 
 builder.Services.AddIdentity<Member, IdentityRole>(options =>
 {
@@ -42,6 +44,7 @@ builder.Services.AddIdentity<Member, IdentityRole>(options =>
 }).AddEntityFrameworkStores<LibrarySystemContext>() // <— connects Identity to EF Core
 .AddDefaultTokenProviders();
 
+builder.Services.AddHostedService<SeedHostedService>();
 
 
 builder.Services.AddAuthentication(options =>
@@ -75,92 +78,8 @@ builder.Services.AddScoped<IMemberService, MemberService>();
 
 builder.Services.AddScoped<JwtTokenService>();
 
-
 var app = builder.Build();
 
-//seed role
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();
-    
-    
-    var roles = new[] {"Librarian", "Member" };
-    
-   
-    // Check if roles already exist
-    bool rolesExist = roles.All(role => roleManager.RoleExistsAsync(role).Result);
-    bool librarianExists = userManager.FindByNameAsync("MainLibrarian").Result != null;
-
-    // If everything seeded, SKIP
-    if (rolesExist && librarianExists)
-    {
-        Console.WriteLine("⏭ Seeding skipped — roles and librarian already exist.");
-        return; // exit the block early
-    }
-
-    Console.WriteLine("🔄 Seeding Missing Identity Data...");
-    
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-        {
-            await roleManager.CreateAsync(new IdentityRole(role));
-            Console.WriteLine($"   ✔ Role created: {role}");
-        }
-    }
-
-}
-
-// Seeding Librarian user
-using (var scope = app.Services.CreateScope())
-{
-    
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Member>>();
-
-    string librarianRole = nameof(MemberRole.Librarian);
-    string librarianName = "MainLibrarian";
-    string librarianEmail = "librarian@librarian.com";
-    string librarianPassword = "Test1234";
-
-    var existingUser = await userManager.FindByNameAsync(librarianName);
-    if (existingUser == null)
-    {
-        var newLibrarian = new Member
-        {
-            UserName = librarianName,
-            Email = librarianEmail,
-            FirstName = "Alexandria",
-            LastName = "Rivera",
-            Gender = Gender.Female,
-            DateOfBirth = new DateTime(1992, 3, 15),
-            Address = "123 Library Street, Book town, Manila, Philippines",
-            ProfilePictureUrl = "https://cdn-icons-png.flaticon.com/512/194/194938.png",
-            Role = MemberRole.Librarian,
-            EmailConfirmed = true,
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-        };
-
-        var result = await userManager.CreateAsync(newLibrarian, librarianPassword);
-
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(newLibrarian, librarianRole);
-            Console.WriteLine("✅ Librarian user created successfully with mock profile data!");
-        }
-        else
-        {
-            Console.WriteLine("⚠️ Librarian creation failed:");
-            foreach (var error in result.Errors)
-                Console.WriteLine($" - {error.Description}");
-        }
-    }
-    else
-    {
-        Console.WriteLine("ℹ️ Librarian user already exists.");
-    }
-}
 
 
 // Configure the HTTP request pipeline.

@@ -17,24 +17,24 @@ public class JwtTokenService (IConfiguration config)
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName ?? ""),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? ""),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
                 new Claim("role", user.Role.ToString())
             };
 
-            foreach (var role in  roles)
-            {
+            foreach (var role in roles)
                 claims.Add(new Claim(ClaimTypes.Role, role));
-            }
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
                 audience: jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(jwtSettings["ExpireMinutes"])),
+                expires: DateTime.UtcNow.AddMinutes(int.Parse(jwtSettings["ExpireMinutes"]!)),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
-            
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
 } 
