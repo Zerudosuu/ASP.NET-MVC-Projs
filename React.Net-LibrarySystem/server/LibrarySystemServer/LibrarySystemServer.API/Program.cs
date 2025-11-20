@@ -11,7 +11,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using LibrarySystemServer.CompiledModels;
+using LibrarySystemServer.Services.GoogleBooks;
 using LibrarySystemServer.Services.Seeder;
+using Microsoft.Extensions.Http.Resilience;
+using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,8 +70,34 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IBookService, BookService>();
+
+builder.Services.AddHttpClient<IGoogleBooksClient, GoogleBooksClient>(client =>
+    {
+        client.BaseAddress = new Uri("https://www.googleapis.com/books/v1/");
+    })
+    .AddResilienceHandler("google-books", pipeline =>
+    {
+        // Automatic retry
+        pipeline.AddRetry(new HttpRetryStrategyOptions
+        {
+            MaxRetryAttempts = 3,
+            Delay = TimeSpan.FromSeconds(2),
+            UseJitter = true
+        });
+
+        // Timeout per request
+        pipeline.AddTimeout(TimeSpan.FromSeconds(10));
+
+        // Circuit breaker for repeated failures
+        pipeline.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
+        {
+            FailureRatio = 0.1,
+            MinimumThroughput = 10,
+            SamplingDuration = TimeSpan.FromSeconds(30),
+            BreakDuration = TimeSpan.FromSeconds(15)
+        });
+    });
+
 
 builder.Services.AddScoped<ILibrarianRepository, LibrarianRepository> ();
 builder.Services.AddScoped<ILibrarianService, LibrarianService>();
