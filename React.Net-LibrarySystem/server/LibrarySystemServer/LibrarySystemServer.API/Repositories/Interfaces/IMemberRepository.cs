@@ -1,11 +1,14 @@
+using LibrarySystemServer.DTOs.Book;
+using LibrarySystemServer.DTOs.Pagination;
 using LibrarySystemServer.Model;
+
 
 namespace LibrarySystemServer.Repositories.Interfaces;
 
 public interface IMemberRepository
 {
     // Book operations
-    Task<IEnumerable<Book>> GetAvailableBooksAsync();
+    Task<PageResult<Book>> GetAvailableBooksAsync(int page, int pageSize, CancellationToken cancellationToken);
     Task<Book?> GetBookByIdAsync(Guid id);
     
     Task<bool> IsBookAlreadyBorrowedAsync(Guid bookId);

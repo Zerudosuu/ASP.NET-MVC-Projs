@@ -10,6 +10,8 @@ public interface ILibrarianRepository
     Task UpdateBook(Book book);
     Task DeleteBookAsync(Guid id);
     
+
+    
     Task SaveChangesAsync();
     // Borrow management
     Task<IEnumerable<BorrowRecord>> GetAllBorrowRecordsAsync();

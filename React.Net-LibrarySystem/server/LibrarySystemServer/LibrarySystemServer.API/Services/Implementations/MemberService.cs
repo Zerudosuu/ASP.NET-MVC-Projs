@@ -1,3 +1,5 @@
+using LibrarySystemServer.DTOs.Book;
+using LibrarySystemServer.DTOs.Pagination;
 using LibrarySystemServer.Model;
 using LibrarySystemServer.Repositories.Interfaces;
 using LibrarySystemServer.Services.Interfaces;
@@ -8,7 +10,12 @@ public class MemberService (IMemberRepository context): IMemberService
 {
     private readonly IMemberRepository  _memberRepository = context;
     
-    public Task<IEnumerable<Book>> GetAvailableBooksAsync() =>  _memberRepository.GetAvailableBooksAsync();
+    public Task<PageResult<BookDto>> GetAvailableBooksAsync(int page, int size, CancellationToken cancellationToken)
+    {
+        var query = _memberRepository.GetAvailableBooksAsync(page, size, cancellationToken);
+        
+        
+    }
 
     public Task<IEnumerable<BorrowRecord>> GetMyBorrowedBooksAsync(string memberId , bool  onlyActive = true) => _memberRepository.GetBorrowRecordsByMemberAsync(memberId, onlyActive);
     

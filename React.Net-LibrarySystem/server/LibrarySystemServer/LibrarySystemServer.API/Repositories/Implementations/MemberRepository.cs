@@ -1,6 +1,9 @@
 using LibrarySystemServer.Data;
+using LibrarySystemServer.DTOs.Book;
+using LibrarySystemServer.DTOs.Pagination;
 using LibrarySystemServer.Model;
 using LibrarySystemServer.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystemServer.Repositories.Implementations;
@@ -8,11 +11,30 @@ namespace LibrarySystemServer.Repositories.Implementations;
 public class MemberRepository(LibrarySystemContext context) : IMemberRepository
 {
     private readonly LibrarySystemContext _context = context;
-    
-    public async Task<IEnumerable<Book>> GetAvailableBooksAsync()
+
+
+    // Repository
+    public async Task<PageResult<Book>> GetAvailableBooksAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
-        return await _context.Books.ToListAsync();
+        var query = _context.Books.Where(b => b.Quantity > 0);
+
+        var totalItems = await query.CountAsync();
+        var items = await query
+            .OrderBy(b => b.Title)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PageResult<Book>
+        {
+            Items = items,
+            PageNumber = page,
+            PageSize = pageSize,
+            TotalItems = totalItems,
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+        };
     }
+
 
     public async Task<Book?> GetBookByIdAsync(Guid id)
     {
