@@ -10,11 +10,28 @@ public class MemberService (IMemberRepository context): IMemberService
 {
     private readonly IMemberRepository  _memberRepository = context;
     
-    public Task<PageResult<BookDto>> GetAvailableBooksAsync(int page, int size, CancellationToken cancellationToken)
+    public async Task<PageResult<BookDto>> GetAvailableBooksAsync(int page, int size, CancellationToken cancellationToken)
     {
-        var query = _memberRepository.GetAvailableBooksAsync(page, size, cancellationToken);
-        
-        
+        var result = await _memberRepository.GetAvailableBooksAsync(page, size, cancellationToken);
+
+        var dtoItems = result.Items.Select(b => new BookDto
+        {
+            Id = b.Id,
+            GoogleBookId = b.GoogleBookId,
+            Title = b.Title,
+            Author = b.Author,
+            ThumbnailUrl = b.ThumbnailUrl,
+            IsAvailable = b.Quantity > 0
+        }).ToList();
+
+        return new PageResult<BookDto>
+        {
+            Items = dtoItems,
+            PageNumber = result.PageNumber,
+            PageSize = result.PageSize,
+            TotalItems = result.TotalItems,
+            TotalPages = result.TotalPages
+        };
     }
 
     public Task<IEnumerable<BorrowRecord>> GetMyBorrowedBooksAsync(string memberId , bool  onlyActive = true) => _memberRepository.GetBorrowRecordsByMemberAsync(memberId, onlyActive);

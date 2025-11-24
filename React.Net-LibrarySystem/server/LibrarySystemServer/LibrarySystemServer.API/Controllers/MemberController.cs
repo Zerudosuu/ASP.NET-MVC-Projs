@@ -17,9 +17,9 @@ namespace LibrarySystemServer.Controllers
 
         //GET: api/member/books
         [HttpGet("books")]
-        public async Task<IActionResult> GetAvailableBooks()
+        public async Task<IActionResult> GetAvailableBooks(int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
         {
-            var books = await _memberService.GetAvailableBooksAsync();
+            var books = await _memberService.GetAvailableBooksAsync(page , pageSize, cancellationToken);
             return Ok(books);
         }
 
