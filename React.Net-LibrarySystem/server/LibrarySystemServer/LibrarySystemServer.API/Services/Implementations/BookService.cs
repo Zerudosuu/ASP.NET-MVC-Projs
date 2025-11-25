@@ -1,5 +1,6 @@
 using LibrarySystemServer.DTOs.Book;
 using LibrarySystemServer.DTOs.Pagination;
+using LibrarySystemServer.Mappers;
 using LibrarySystemServer.Model;
 using LibrarySystemServer.Repositories.Interfaces;
 using LibrarySystemServer.Services.GoogleBooks;
@@ -11,15 +12,14 @@ public class BookService(IBookRepository bookRepository, IGoogleBooksClient goog
 {
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly IGoogleBooksClient _googleBooksClien = googleBooksClient;
-    
+
     public async Task<PageResult<BookDto>> GetAllBooksAsync(int page, int pageSize, CancellationToken cancellationToken = default)
     {
         var result = await _bookRepository.GetAllBooksAsync(page, pageSize, cancellationToken);
-        var dtoItems = result.Items.Select(MapToDto).ToList();
-        
+
         return new PageResult<BookDto>
         {
-            Items = dtoItems,
+            Items = result.Items.ToDtoList().ToList(),
             PageNumber = result.PageNumber,
             PageSize = result.PageSize,
             TotalItems = result.TotalItems,
@@ -29,87 +29,61 @@ public class BookService(IBookRepository bookRepository, IGoogleBooksClient goog
 
     public async Task<BookDto?> GetBookByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var book = await _bookRepository.GetBookByIdAsync(id);
-        if (book == null) return null;
-        return MapToDto(book);
+        var book = await _bookRepository.GetBookByIdAsync(id, cancellationToken);
+        return book?.ToDto();
     }
 
     public async Task<BookDto?> GetBookByTitleAsync(string title, CancellationToken cancellationToken = default)
     {
         var book = await _bookRepository.GetBookByTitleAsync(title, cancellationToken);
-        return book == null ? null : MapToDto(book);
-        
+        return book?.ToDto();
     }
-    
 
     public async Task<IEnumerable<BookDto>> SearchBookWithGoogleFallbackAsync(string title, CancellationToken cancellationToken = default)
     {
-        // 1. Search DB first
         var localBooks = await _bookRepository.SearchBooksAsync(title, cancellationToken);
+
         if (localBooks.Any())
-        {
-            return localBooks.Select(MapToDto).ToList();
-        }
+            return localBooks.ToDtoList();
 
-        // 2. If not found, call Google Books API
-        var googleResult = await _googleBooksClien.SearchAsync(title, 0, 5, cancellationToken); // fetch 5 results
-        if (googleResult.Items == null || !googleResult.Items.Any()) return Enumerable.Empty<BookDto>();
+        var googleResult = await _googleBooksClien.SearchAsync(title, 0, 5, cancellationToken);
 
-        var dtoList = googleResult.Items.Select(item => new BookDto
+        if (googleResult.Items == null)
+            return Enumerable.Empty<BookDto>();
+
+        return googleResult.Items.Select(MapGoogleItemToDto).ToList();
+    }
+
+    public async Task<BookDto> AddBookAsync(CreateBookDto dto, CancellationToken cancellationToken = default)
+    {
+        var book = dto.ToEntity();
+        await _bookRepository.AddBookAsync(book, cancellationToken);
+        return book.ToDto();
+    }
+
+    public async Task<BookDto?> UpdateBookAsync(Guid id, UpdateBookDto dto, CancellationToken cancellationToken = default)
+    {
+        var book = await _bookRepository.GetBookByIdAsync(id, cancellationToken);
+        if (book == null) return null;
+
+        book.UpdateEntity(dto);
+        await _bookRepository.UpdateBookAsync(book, cancellationToken);
+
+        return book.ToDto();
+    }
+
+    public async Task<bool> DeleteBookAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _bookRepository.DeleteBookAsync(id, cancellationToken);
+    }
+
+    private static BookDto MapGoogleItemToDto(GoogleBooksDtos.GoogleBookItem item) =>
+        new()
         {
             GoogleBookId = item.Id,
             Title = item.VolumeInfo.Title,
             Author = item.VolumeInfo.Authors?.FirstOrDefault() ?? "Unknown",
             ThumbnailUrl = item.VolumeInfo.ImageLinks?.Thumbnail,
             IsAvailable = true
-        }).ToList();
-
-        // 3. Optionally cache them in DB
-        foreach (var dto in dtoList)
-        {
-            var newBook = new Book
-            {
-                Id = Guid.NewGuid(),
-                GoogleBookId = dto.GoogleBookId,
-                Title = dto.Title,
-                Author = dto.Author,
-                ThumbnailUrl = dto.ThumbnailUrl,
-                Quantity = 1
-            };
-            await _bookRepository.AddBookAsync(newBook);
-        }
-
-        return dtoList;
-    }
-
-
-
-
-
-    public Task<BookDto> AddBookAsync(BookDto dto, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<BookDto> UpdateBookAsync(BookDto dto, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<bool> DeleteBookAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-    
-    
-    // 🔹 Manual mapping helper
-    private BookDto MapToDto(Book book) => new BookDto
-    {
-        Id = book.Id,
-        GoogleBookId = book.GoogleBookId,
-        Title = book.Title,
-        Author = book.Author,
-        ThumbnailUrl = book.ThumbnailUrl,
-        IsAvailable = book.Quantity > 0
-    };
+        };
 }
