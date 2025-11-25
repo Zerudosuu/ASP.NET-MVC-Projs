@@ -14,7 +14,7 @@ public interface IBookService
     Task<IEnumerable<BookDto>> SearchBookWithGoogleFallbackAsync(string query, CancellationToken cancellationToken = default);
 
     // 📌 CRUD (for Librarians only, enforce via authorization)
-    Task<BookDto> AddBookAsync(BookDto dto, CancellationToken cancellationToken = default);
-    Task<BookDto> UpdateBookAsync(BookDto dto, CancellationToken cancellationToken = default);
-    Task<bool> DeleteBookAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<BookDto> AddBookAsync(CreateBookDto dto);
+    Task<BookDto> UpdateBookAsync(Guid id, UpdateBookDto dtoUpdate);
+    Task<bool> DeleteBookAsync(Guid id);
 }
