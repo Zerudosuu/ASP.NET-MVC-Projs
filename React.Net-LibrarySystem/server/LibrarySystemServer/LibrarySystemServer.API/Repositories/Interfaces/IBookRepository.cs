@@ -10,14 +10,14 @@ public interface IBookRepository
     Task<Book?> GetBookByTitleAsync(string title, CancellationToken cancellationToken = default);
     Task <IEnumerable<Book>> SearchBooksAsync(string query, CancellationToken cancellationToken);
     
-    Task <Book?> GetBookByIdAsync(Guid id);
+    Task <Book?> GetBookByIdAsync(Guid id,CancellationToken cancellationToken );
     
-    Task AddBookAsync(Book book);
+    Task AddBookAsync(Book book, CancellationToken cancellationToken);
 
-    Task UpdateBookAsync(Book book);
+    Task UpdateBookAsync(Book book, CancellationToken cancellationToken);
 
-    Task DeleteBookAsync(Guid id);
+    Task DeleteBookAsync(Guid id, CancellationToken cancellationToken);
     
-    Task SaveChangesAsync();
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 
 }

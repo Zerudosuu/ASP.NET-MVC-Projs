@@ -29,7 +29,7 @@ public class BookService(IBookRepository bookRepository, IGoogleBooksClient goog
 
     public async Task<BookDto?> GetBookByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var book = await _bookRepository.GetBookByIdAsync(id);
+        var book = await _bookRepository.GetBookByIdAsync(id, cancellationToken);
         return book?.ToDto();
     }
 
@@ -54,27 +54,27 @@ public class BookService(IBookRepository bookRepository, IGoogleBooksClient goog
         return googleResult.Items.Select(MapGoogleItemToDto).ToList();
     }
 
-    public async Task<BookDto> AddBookAsync(CreateBookDto dto)
+    public async Task<BookDto> AddBookAsync(CreateBookDto dto, CancellationToken cancellationToken = default)
     {
         var book = dto.ToEntity();
-        await _bookRepository.AddBookAsync(book);
+        await _bookRepository.AddBookAsync(book, cancellationToken);
         return book.ToDto();
     }
 
-    public async Task<BookDto?> UpdateBookAsync(Guid id, UpdateBookDto dtoUpdate)
+    public async Task<BookDto?> UpdateBookAsync(Guid id, UpdateBookDto dtoUpdate, CancellationToken cancellationToken = default)
     {
-        var book = await _bookRepository.GetBookByIdAsync(id);
+        var book = await _bookRepository.GetBookByIdAsync(id, cancellationToken);
         if (book == null) return null;
 
         book.UpdateEntity(dtoUpdate);
-        await _bookRepository.UpdateBookAsync(book);
+        await _bookRepository.UpdateBookAsync(book, cancellationToken);
 
         return book.ToDto();
     }
 
-    public async Task<bool> DeleteBookAsync(Guid id)
+    public async Task DeleteBookAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _bookRepository.DeleteBookAsync(id);
+        await _bookRepository.DeleteBookAsync(id, cancellationToken);
     }
 
     private static BookDto MapGoogleItemToDto(GoogleBooksDtos.GoogleBookItem item) =>
