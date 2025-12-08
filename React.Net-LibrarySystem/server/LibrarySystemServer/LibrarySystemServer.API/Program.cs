@@ -98,6 +98,8 @@ builder.Services.AddHttpClient<IGoogleBooksClient, GoogleBooksClient>(client =>
         });
     });
 
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 
 builder.Services.AddScoped<ILibrarianRepository, LibrarianRepository> ();
 builder.Services.AddScoped<ILibrarianService, LibrarianService>();

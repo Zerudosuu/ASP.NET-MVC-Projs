@@ -39,7 +39,7 @@ public class BookService(IBookRepository bookRepository, IGoogleBooksClient goog
         return book?.ToDto();
     }
 
-    public async Task<IEnumerable<BookDto>> SearchBookWithGoogleFallbackAsync(string title, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<BookDto>> SearchBookWithGoogleFallbackAsync(string title, int startIndex, int maxResults, CancellationToken cancellationToken = default)
     {
         var localBooks = await _bookRepository.SearchBooksAsync(title, cancellationToken);
 

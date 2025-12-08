@@ -8,9 +8,10 @@ namespace LibrarySystemServer.Controllers
     [Authorize(Roles = "Librarian")]
     [ApiController]
     [Route("api/[controller]")]
-    public class LibrarianController(ILibrarianService librarianService) : ControllerBase
+    public class LibrarianController(ILibrarianService librarianService, IBookService bookService) : ControllerBase
     {
         private readonly ILibrarianService _librarianService = librarianService;
+        private readonly IBookService _bookService = bookService;
 
         // GET: api/librarian/books
         [HttpGet("books")]
@@ -27,6 +28,29 @@ namespace LibrarySystemServer.Controllers
             var book = await _librarianService.GetBookByIdAsync(id);
             return Ok(book);
         }
+        
+        //GEt: api/librarian/search
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchBooks(
+            [FromQuery] string query,
+            [FromQuery] int startIndex = 0,
+            [FromQuery] int maxResults = 10,
+            CancellationToken cancellationToken = default
+        )
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return BadRequest("Query parameter is required.");
+
+            var result = await _bookService.SearchBookWithGoogleFallbackAsync(
+                query,
+                startIndex,
+                maxResults,
+                cancellationToken
+            );
+
+            return Ok(result);
+        }
+
         
         //POST: api/librarian/books
         [HttpPost("books")]
