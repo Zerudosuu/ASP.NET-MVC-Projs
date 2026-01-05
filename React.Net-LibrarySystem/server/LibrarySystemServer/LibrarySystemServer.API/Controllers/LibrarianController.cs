@@ -33,7 +33,7 @@ namespace LibrarySystemServer.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SearchBooks(
             [FromQuery] string query,
-            [FromQuery] int startIndex = 0,
+            [FromQuery] int  startIndex = 0,
             [FromQuery] int maxResults = 10,
             CancellationToken cancellationToken = default
         )

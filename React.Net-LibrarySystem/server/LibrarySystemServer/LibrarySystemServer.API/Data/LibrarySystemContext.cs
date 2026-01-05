@@ -1,4 +1,5 @@
 using LibrarySystemServer.Model;
+using LibrarySystemServer.Services.Auth;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,9 @@ namespace LibrarySystemServer.Data
     {
         public DbSet<Book> Books { get; set; }
         public DbSet<BorrowRecord> BorrowRecords { get; set; }
+        
+        public DbSet<RevokedToken> RevokedTokens { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +30,10 @@ namespace LibrarySystemServer.Data
                 .HasForeignKey(br => br.ApprovedById)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            
+            modelBuilder.Entity<Book>()
+                .HasIndex(b => b.GoogleBookId)
+                .IsUnique();
         }
     }
 }

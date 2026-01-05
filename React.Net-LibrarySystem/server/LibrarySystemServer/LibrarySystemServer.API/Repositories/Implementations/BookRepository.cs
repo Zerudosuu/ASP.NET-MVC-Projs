@@ -4,7 +4,6 @@ using LibrarySystemServer.Model;
 using LibrarySystemServer.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace LibrarySystemServer.Repositories.Implementations;
 
 public class BookRepository : IBookRepository
@@ -16,14 +15,18 @@ public class BookRepository : IBookRepository
         _context = context;
     }
 
-    public async Task<PageResult<Book>> GetAllBooksAsync(int page, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PageResult<Book>> GetAllBooksAsync(
+        int page,
+        int pageSize,
+        CancellationToken cancellationToken = default
+    )
     {
         var query = _context.Books.AsNoTracking();
 
         var totalItems = await query.CountAsync(cancellationToken);
-        
-        var items = await query.
-            OrderBy(b => b.Title)
+
+        var items = await query
+            .OrderBy(b => b.Title)
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
@@ -34,32 +37,49 @@ public class BookRepository : IBookRepository
             PageNumber = page,
             PageSize = pageSize,
             TotalItems = totalItems,
-            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize)
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize),
         };
     }
 
-    public async Task<Book?> GetBookByTitleAsync(string title, CancellationToken cancellationToken = default)
+    public async Task<Book?> GetBookByTitleAsync(
+        string title,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Books.AsNoTracking()
+        return await _context
+            .Books.AsNoTracking()
             .FirstOrDefaultAsync(b => b.Title == title, cancellationToken);
     }
 
-    public async Task<Book?> GetBookByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<Book?> GetBookByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default
+    )
     {
-       return await _context.Books
-            .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
+        return await _context.Books.FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
     }
 
     public async Task AddBookAsync(Book book, CancellationToken cancellationToken = default)
     {
         await _context.Books.AddAsync(book, cancellationToken);
-  
     }
 
     public Task UpdateBookAsync(Book book, CancellationToken cancellationToken = default)
     {
         _context.Books.Update(book);
         return Task.CompletedTask;
+    }
+
+    public async Task<Book?> GetBookByGoogleIdAsync(
+        string googleBookId,
+        CancellationToken cancellationToken = default
+    )
+    {
+        if (string.IsNullOrEmpty(googleBookId))
+            return null;
+        return await _context
+            .Books.AsNoTracking()
+            .FirstOrDefaultAsync(b => b.GoogleBookId == googleBookId, cancellationToken);
     }
 
     public async Task DeleteBookAsync(Guid id, CancellationToken cancellationToken = default)
@@ -71,17 +91,20 @@ public class BookRepository : IBookRepository
         }
     }
 
-    public async Task SaveChangesAsync(CancellationToken  cancellationToken = default)
+    public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<Book>> SearchBooksAsync(string query, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<Book>> SearchBooksAsync(
+        string query,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Books.AsNoTracking()
+        return await _context
+            .Books.AsNoTracking()
             .Where(b => b.Title.Contains(query) || b.Author.Contains(query))
             .OrderBy(b => b.Title)
             .ToListAsync(cancellationToken);
     }
 }
-

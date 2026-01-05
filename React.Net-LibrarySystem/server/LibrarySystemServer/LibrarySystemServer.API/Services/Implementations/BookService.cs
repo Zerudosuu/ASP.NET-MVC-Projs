@@ -41,17 +41,79 @@ public class BookService(IBookRepository bookRepository, IGoogleBooksClient goog
 
     public async Task<IEnumerable<BookDto>> SearchBookWithGoogleFallbackAsync(string title, int startIndex, int maxResults, CancellationToken cancellationToken = default)
     {
+        // 1) Local search first
         var localBooks = await _bookRepository.SearchBooksAsync(title, cancellationToken);
-
         if (localBooks.Any())
             return localBooks.ToDtoList();
 
-        var googleResult = await _googleBooksClien.SearchAsync(title, 0, 5, cancellationToken);
-
-        if (googleResult.Items == null)
+        // 2) Fallback to Google Books
+        var googleResult = await _googleBooksClien.SearchAsync(title, startIndex, maxResults, cancellationToken);
+        if (googleResult.Items == null || !googleResult.Items.Any())
             return Enumerable.Empty<BookDto>();
+        
+        
+    var booksToAdd = new List<Book>();
+    foreach (var item in googleResult.Items)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
 
-        return googleResult.Items.Select(MapGoogleItemToDto).ToList();
+        // Prefer checking by GoogleBookId if available
+        var googleId = item.Id;
+        Book? existing = null;
+        if (!string.IsNullOrEmpty(googleId))
+        {
+            // Recommended: add a repository method GetBookByGoogleIdAsync
+            existing = await _bookRepository.GetBookByGoogleIdAsync(googleId, cancellationToken);
+        }
+
+        // Fallback: check by exact title to avoid duplicates
+        if (existing == null)
+            existing = await _bookRepository.GetBookByTitleAsync(item.VolumeInfo.Title ?? title, cancellationToken);
+
+        if (existing != null)
+            continue; // Skip existing
+
+        // Map Google item to your Book entity
+        var entity = new Book
+        {
+            Id = Guid.NewGuid(),
+            GoogleBookId = googleId ?? string.Empty,
+            Title = item.VolumeInfo.Title ?? "Unknown",
+            Author = item.VolumeInfo.Authors?.FirstOrDefault() ?? "Unknown",
+            Publisher = item.VolumeInfo.Publisher ?? string.Empty,
+            PublishedDate = item.VolumeInfo.PublishedDate ?? string.Empty,
+            Description = item.VolumeInfo.Description ?? string.Empty,
+            ThumbnailUrl = item.VolumeInfo.ImageLinks?.Thumbnail ?? string.Empty,
+            PreviewLink = item.VolumeInfo.PreviewLink ?? string.Empty,
+            Quantity = 1,         // Choose default rule for quantity
+            TotalCopies = 1
+        };
+
+        booksToAdd.Add(entity);
+    }
+
+    if (booksToAdd.Any())
+    {
+        // 3) Persist as a batch
+        foreach (var b in booksToAdd)
+            await _bookRepository.AddBookAsync(b, cancellationToken);
+
+        try
+        {
+            await _bookRepository.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            // Logging recommended — do not leak exceptions to the client here.
+            // If SaveChanges fails due to unique constraint race, you can swallow or handle more specifically.
+            // For now: log and continue returning the google results as DTOs
+            // logger.LogError(ex, "Failed to persist Google books");
+        }
+    }
+
+    // Map returned items to DTOs (either from saved entities or directly)
+    return booksToAdd.Select(b => b.ToDto()).ToList();
+        
     }
 
     public async Task<BookDto> AddBookAsync(CreateBookDto dto, CancellationToken cancellationToken = default)

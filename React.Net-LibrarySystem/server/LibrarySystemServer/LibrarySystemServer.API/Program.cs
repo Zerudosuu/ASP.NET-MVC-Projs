@@ -1,4 +1,5 @@
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 using LibrarySystemServer.Data;
 using LibrarySystemServer.Model;
 using LibrarySystemServer.Repositories.Implementations;
@@ -48,7 +49,7 @@ builder.Services.AddIdentity<Member, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.AddHostedService<SeedHostedService>();
-
+builder.Services.AddHostedService<LibrarySystemServer.Services.Hosted.CleanupExpiredTokensHostedService>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -65,6 +66,19 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = async ctx =>
+        {
+            var jti = ctx.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+            if (string.IsNullOrEmpty(jti)) return;
+
+            var db = ctx.HttpContext.RequestServices.GetRequiredService<LibrarySystemContext>();
+            var isRevoked = await db.RevokedTokens.AnyAsync(rt => rt.Jti == jti && rt.ExpiresAt > DateTime.UtcNow, ctx.HttpContext.RequestAborted);
+            if (isRevoked) ctx.Fail("Token revoked.");
+        }
     };
 });
 
@@ -108,6 +122,7 @@ builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 
 builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<RefreshTokenService>();
 
 var app = builder.Build();
 

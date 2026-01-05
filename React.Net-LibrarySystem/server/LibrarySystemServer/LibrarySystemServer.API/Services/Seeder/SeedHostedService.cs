@@ -23,13 +23,27 @@ namespace LibrarySystemServer.Services.Seeder
 
             var roles = new[] { "Librarian", "Member" };
             string librarianName = "MainLibrarian";
+            string firstMember = "FirstMemmber";
 
-            bool rolesExist = roles.All(role => roleManager.RoleExistsAsync(role).Result);
-            bool librarianExists = await userManager.FindByNameAsync(librarianName) != null;
-
-            if (rolesExist && librarianExists)
+            // Check roles existence asynchronously (avoid blocking .Result)
+            bool rolesExist = true;
+            foreach (var role in roles)
             {
-                Console.WriteLine("⏭ Seeding skipped — roles and librarian already exist.");
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    rolesExist = false;
+                    break;
+                }
+            }
+
+            bool librarianExists = await userManager.FindByNameAsync(librarianName) != null;
+            bool firstMemberExists = await userManager.FindByNameAsync(firstMember) != null;
+
+            // Only skip seeding if roles and BOTH accounts already exist. If one of the accounts
+            // is missing, continue so we can create it.
+            if (rolesExist && librarianExists && firstMemberExists)
+            {
+                Console.WriteLine("⏭ Seeding skipped — roles and both users already exist.");
                 return;
             }
 
@@ -78,6 +92,41 @@ namespace LibrarySystemServer.Services.Seeder
                     foreach (var error in result.Errors)
                         Console.WriteLine($" - {error.Description}");
                 }
+            }
+
+            if (!firstMemberExists)
+            {
+                var newMember = new Member
+                {
+                    UserName = firstMember,
+                    Email = "Member@member.com",
+                    FirstName = "Ronald",
+                    LastName = "Salvador",
+                    Gender = Gender.Male,
+                    DateOfBirth = new DateTime(1992, 3, 15),
+                    Address = "151-4 Library Street, Book Town, Manila, Philippines",
+                    ProfilePictureUrl = "https://cdn-icons-png.flaticon.com/512/194/194938.png",
+                    Role = MemberRole.Member,
+                    EmailConfirmed = true,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                };
+                
+                const string memberPassword = "Test1234";
+                var result = await userManager.CreateAsync(newMember, memberPassword);
+                
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newMember, "Member");
+                    Console.WriteLine("✅ First member user created successfully with mock profile data!");
+                }
+                else
+                {
+                    Console.WriteLine("⚠️ First member creation failed:");
+                    foreach (var error in result.Errors)
+                        Console.WriteLine($" - {error.Description}");
+                }   
+
             }
         }
 
