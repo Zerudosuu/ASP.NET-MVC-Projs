@@ -20,6 +20,7 @@ namespace LibrarySystemServer.CompiledModels
                 typeof(Book),
                 baseEntityType,
                 propertyCount: 13,
+                unnamedIndexCount: 1,
                 keyCount: 1);
 
             var id = runtimeEntityType.AddProperty(
@@ -122,6 +123,10 @@ namespace LibrarySystemServer.CompiledModels
             var key = runtimeEntityType.AddKey(
                 new[] { id });
             runtimeEntityType.SetPrimaryKey(key);
+
+            var index = runtimeEntityType.AddIndex(
+                new[] { googleBookId },
+                unique: true);
 
             return runtimeEntityType;
         }

@@ -11,7 +11,7 @@ namespace LibrarySystemServer.CompiledModels
     public partial class LibrarySystemContextModel
     {
         private LibrarySystemContextModel()
-            : base(skipDetectChanges: false, modelId: new Guid("0008c2f5-9e64-484d-8020-d97410d1a059"), entityTypeCount: 9)
+            : base(skipDetectChanges: false, modelId: new Guid("60cdf8db-552b-4af7-b8dd-ce59e384ef04"), entityTypeCount: 11)
         {
         }
 
@@ -20,6 +20,8 @@ namespace LibrarySystemServer.CompiledModels
             var book = BookEntityType.Create(this);
             var borrowRecord = BorrowRecordEntityType.Create(this);
             var member = MemberEntityType.Create(this);
+            var refreshToken = RefreshTokenEntityType.Create(this);
+            var revokedToken = RevokedTokenEntityType.Create(this);
             var identityRole = IdentityRoleEntityType.Create(this);
             var identityRoleClaim = IdentityRoleClaimEntityType.Create(this);
             var identityUserClaim = IdentityUserClaimEntityType.Create(this);
@@ -40,6 +42,8 @@ namespace LibrarySystemServer.CompiledModels
             BookEntityType.CreateAnnotations(book);
             BorrowRecordEntityType.CreateAnnotations(borrowRecord);
             MemberEntityType.CreateAnnotations(member);
+            RefreshTokenEntityType.CreateAnnotations(refreshToken);
+            RevokedTokenEntityType.CreateAnnotations(revokedToken);
             IdentityRoleEntityType.CreateAnnotations(identityRole);
             IdentityRoleClaimEntityType.CreateAnnotations(identityRoleClaim);
             IdentityUserClaimEntityType.CreateAnnotations(identityUserClaim);

@@ -78,7 +78,7 @@ namespace LibrarySystemServer.Migrations
                     b.HasIndex("GoogleBookId")
                         .IsUnique();
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("LibrarySystemServer.Model.BorrowRecord", b =>
@@ -117,7 +117,7 @@ namespace LibrarySystemServer.Migrations
 
                     b.HasIndex("MemberId");
 
-                    b.ToTable("BorrowRecords");
+                    b.ToTable("BorrowRecords", (string)null);
                 });
 
             modelBuilder.Entity("LibrarySystemServer.Model.Member", b =>
@@ -248,7 +248,7 @@ namespace LibrarySystemServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("LibrarySystemServer.Services.Auth.RevokedToken", b =>
@@ -271,7 +271,7 @@ namespace LibrarySystemServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RevokedTokens");
+                    b.ToTable("RevokedTokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
