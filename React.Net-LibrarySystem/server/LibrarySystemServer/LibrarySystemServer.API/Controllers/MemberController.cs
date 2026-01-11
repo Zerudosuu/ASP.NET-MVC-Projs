@@ -8,9 +8,10 @@ namespace LibrarySystemServer.Controllers
     [Authorize(Roles = "Member")]
     [ApiController]
     [Route("api/[controller]")]
-    public class MemberController(IMemberService memberService) : ControllerBase
+    public class MemberController(IMemberService memberService, IBookService bookService) : ControllerBase
     {
         private readonly IMemberService _memberService = memberService;
+        private readonly IBookService _bookService = bookService;
 
         //Helper to get the current authenticated member ID
         private string? MemberId => User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -21,6 +22,28 @@ namespace LibrarySystemServer.Controllers
         {
             var books = await _memberService.GetAvailableBooksAsync(page , pageSize, cancellationToken);
             return Ok(books);
+        }
+        
+        //GEt: api/librarian/search
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchBooks(
+            [FromQuery] string query,
+            [FromQuery] int  startIndex = 0,
+            [FromQuery] int maxResults = 10,
+            CancellationToken cancellationToken = default
+        )
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return BadRequest("Query parameter is required.");
+
+            var result = await _bookService.SearchBookWithGoogleFallbackAsync(
+                query,
+                startIndex,
+                maxResults,
+                cancellationToken
+            );
+
+            return Ok(result);
         }
 
         //GET: api/member/borrowed

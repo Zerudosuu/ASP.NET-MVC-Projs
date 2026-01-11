@@ -29,29 +29,6 @@ namespace LibrarySystemServer.Controllers
             return Ok(book);
         }
         
-        //GEt: api/librarian/search
-        [HttpGet("search")]
-        public async Task<IActionResult> SearchBooks(
-            [FromQuery] string query,
-            [FromQuery] int  startIndex = 0,
-            [FromQuery] int maxResults = 10,
-            CancellationToken cancellationToken = default
-        )
-        {
-            if (string.IsNullOrWhiteSpace(query))
-                return BadRequest("Query parameter is required.");
-
-            var result = await _bookService.SearchBookWithGoogleFallbackAsync(
-                query,
-                startIndex,
-                maxResults,
-                cancellationToken
-            );
-
-            return Ok(result);
-        }
-
-        
         //POST: api/librarian/books
         [HttpPost("books")]
         public async Task<IActionResult> AddBook([FromBody] Book book)
